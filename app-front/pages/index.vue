@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <div>
     <!-- Navegação -->
     <b-navbar toggleable="lg" type="dark" variant="info">
@@ -248,13 +247,3 @@ export default {
         margin: 20px auto;
     }
 </style>
-=======
-  <Tutorial />
-</template>
-
-<script>
-export default {
-  name: 'IndexPage',
-}
-</script>
->>>>>>> 1218b6971b181dbeaf6a8898d996aa8183017907

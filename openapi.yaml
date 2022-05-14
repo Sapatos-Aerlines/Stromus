@@ -1,0 +1,522 @@
+openapi: 3.0.0
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/dswi6/TesteAPI/1.0.0
+info:
+  description: Descrição da API do projeto de um App de Música.
+  version: "1.0.0"
+  title: Stromus
+  contact:
+    email: a2@a.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: stromus
+    description: Todos os endpoints sobre as músicas
+paths:
+  /musicas:
+    get:
+      summary: Busca todas as músicas do sistema
+      tags:
+        - música
+      description: |
+        O cliente não precisa passar nenhuma informação. Apenas acessando este endpoint, 
+        ele obterá todos os itens do sistema.
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Retorno de todos os itens do sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/musicaSistema'
+        '400':
+          description: bad input parameter
+    post:
+      summary: Adiciona uma nova música ao sistema
+      tags:
+        - música
+      description: Adiciona um item ao sistema
+      responses:
+        '201':
+          description: novo item criado
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: Um item com esses dados já existe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/musicaSistema'
+        description: Dados da música a ser adicionada
+  /musicas/{id_musica}:
+    get:
+      summary: Busca a música no sistema
+      tags:
+        - música
+      description: |
+        O cliente passa uma música registrada para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_musica
+          description: Music ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorno o item para a música informada
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/musicaSistema'
+        '404':
+          description: Item não encontrado para a música informada
+    delete:
+      summary: Remove o item com a música informada
+      tags:
+        - música
+      description: |
+        O cliente passa uma música registrada para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_musica
+          description: Music ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorna a música informada
+          content:
+            application/text:
+              example: Item removido
+        '404':
+          description: Item não encontrado para o id informado
+  /albuns:
+    get:
+      summary: Busca todos os álbuns do sistema
+      tags:
+        - álbum
+      description: |
+        O cliente não precisa passar nenhuma informação. Apenas acessando este endpoint, 
+        ele obterá todos os itens do sistema.
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Retorno de todos os itens do sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/albumSistema'
+        '400':
+          description: bad input parameter
+    post:
+      summary: Adiciona um novo álbum ao sistema
+      tags:
+        - álbum
+      description: Adiciona um item ao sistema
+      responses:
+        '201':
+          description: novo item criado
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: Um item com esses dados já existe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/albumSistema'
+        description: Dado de álbum a ser adicionado
+  /albuns/{id_album}:
+    get:
+      summary: Busca o álbum no sistema
+      tags:
+        - álbum
+      description: |
+        O cliente passa uma musica registrada para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_album
+          description: Album ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorno o item para o álbum informado
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/albumSistema'
+        '404':
+          description: Item não encontrado para o álbum informado
+    delete:
+      summary: Remove o item com o álbum informado
+      tags:
+        - álbum
+      description: |
+        O cliente passa um álbum registrado para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_album
+          description: Album ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorna a música informada
+          content:
+            application/text:
+              example: Item removido
+        '404':
+          description: Item não encontrado para o id informado
+  /usuarios:
+    get:
+      summary: Busca todos os usuários do sistema
+      tags:
+        - usuário
+      description: |
+        O cliente não precisa passar nenhuma informação. Apenas acessando este endpoint, 
+        ele obterá todos os itens do sistema.
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Retorno de todos os itens do sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/usuarioSistema'
+        '400':
+          description: bad input parameter
+    post:
+      summary: Adiciona um novo usuário ao sistema
+      tags:
+        - usuário
+      description: Adiciona um item ao sistema
+      responses:
+        '201':
+          description: novo item criado
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: Um item com esses dados já existe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/usuarioSistema'
+        description: Dados do usuário a ser adicionado
+  /usuarios/{id_usuario}:
+    get:
+      summary: Busca o usuário no sistema
+      tags:
+        - usuário
+      description: |
+        O cliente passa um usuário registrado para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_usuario
+          description: Album ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorno o item para o usuário informado
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/usuarioSistema'
+        '404':
+          description: Item não encontrado para o usuário informado
+    delete:
+      summary: Remove o item com o usuário informado
+      tags:
+        - usuário
+      description: |
+        O cliente passa um usuário registrado para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_usuario
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorna o usuário informado
+          content:
+            application/text:
+              example: Item removido
+        '404':
+          description: Item não encontrado para o id informado
+          
+  /artistas:
+    get:
+      summary: Busca todos os artistas do sistema
+      tags:
+        - artista
+      description: |
+        O cliente não precisa passar nenhuma informação. Apenas acessando este endpoint, 
+        ele obterá todos os itens do sistema.
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Retorno de todos os itens do sistema
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/artistaSistema'
+        '400':
+          description: bad input parameter
+    post:
+      summary: Adiciona um novo artista ao sistema
+      tags:
+        - artista
+      description: Adiciona um item ao sistema
+      responses:
+        '201':
+          description: novo item criado
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: Um item com esses dados já existe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/artistaSistema'
+        description: Dados do artista a ser adicionado
+  /artistas/{id_artista}:
+    get:
+      summary: Busca o artista no sistema
+      tags:
+        - artista
+      description: |
+        O cliente passa um artista registrado para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_artista
+          description: Artista ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorno o item para o usuário informado
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/artistaSistema'
+        '404':
+          description: Item não encontrado para o usuário informado
+    delete:
+      summary: Remove o item com o artista informado
+      tags:
+        - artista
+      description: |
+        O cliente passa um artista registrado para buscar os dados do item correspondente.
+      parameters: 
+        - in: path
+          name: id_artista
+          description: Artist ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorna o artista informado
+          content:
+            application/text:
+              example: Item removido
+        '404':
+          description: Item não encontrado para o id informado
+components:
+  schemas:
+    musicaSistema:
+      type: object
+      required:
+        - id_musica
+        - artista
+        - nome
+        - duracao
+        - estilo
+      properties:
+        id_musica:
+          type: number
+          example: 3843456
+        artista:
+          type: string
+          example: KAKA
+        nome:
+          type: string
+          example: ALUPA
+        duracao:
+          type: string
+          format: time
+          example: 03:30
+        estilo:
+          type: string
+          example: ROCK
+    albumSistema:
+      type: object
+      required:
+        - id_album
+        - nome
+        - dataLancamento
+        - musicas
+        - artista
+      properties:
+        id_album:
+          type: number
+          example: 2873428
+        nome:
+          type: string
+          example: ARRUA
+        dataLancamento:
+          type: string
+          format: date-time
+          example: '2022-03-03'
+        musicas:
+          type: string
+          example: []
+        artista:
+          type: string
+          example: KAKA
+    usuarioSistema:
+      type: object
+      required:
+        - id_usuario
+        - nome
+        - email
+        - senha
+        - telefone
+      properties:
+        id_usuario:
+          type: number
+          example: 283472
+        nome:
+          type: string
+          example: ARRUA
+        email:
+          type: string
+          example: a@a.com
+        senha:
+          type: string
+          example: 123
+        telefone:
+          type: string
+          example: 4002-8922
+    artistaSistema:
+      type: object
+      required:
+        - id_artista
+        - nome
+        - seguidores
+      properties:
+        id_artista:
+          type: number
+          example: 9348234
+        nome:
+          type: string
+          example: ARRUA
+        seguidores:
+          type: number
+          example: 3485345

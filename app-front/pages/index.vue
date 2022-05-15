@@ -64,11 +64,11 @@
   </b-navbar>
 
   <div id="infos_faixa">
-      <img id="capa_album" src="https://th.bing.com/th/id/OIP.xsLMNQLfE8ro2gNBu-fshQHaFL?pid=ImgDet&rs=1">
+      <img id="capa_album" src="https://m.media-amazon.com/images/I/71VApfdR6lL._AC_SX425_.jpg">
 
       <div class="player-display">
-          <span id="nome_artista" style="text-shadow: 0px 0px 3px black !important;">Rock</span><br>
-          <span id="nome_faixa" style="text-shadow: 0px 0px 3px black !important; filter: drop-shadow(0px 0px 15px black);">Olê Olê Olá</span>
+          <span id="nome_artista" style="text-shadow: 0px 0px 3px black !important;">Van Halen</span><br>
+          <span id="nome_faixa" style="text-shadow: 0px 0px 3px black !important; filter: drop-shadow(0px 0px 15px black);">Jump</span>
       </div>
   </div>
 
@@ -265,7 +265,7 @@ export default {
         this.totalRows = this.artistas.length
 
         console.log(this.artistas.length);
-      })      
+      })
     },
 
     removeSelectedArtista: function (nome) {

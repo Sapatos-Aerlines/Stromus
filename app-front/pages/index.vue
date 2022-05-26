@@ -6,7 +6,6 @@
     <b-navbar id="painel_infos">
       <h1 id="stromus_title">Stromus</h1>
 
-      <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
 
       <div id="buttons_nav">
         <b-navbar-nav>
@@ -17,7 +16,7 @@
               cardView = false
               tableView = false
             ">
-            <h2><i class="icons_nav fas fa-chess-queen"></i>Inicio</h2>
+            <h2><em class="icons_nav fas fa-chess-queen"></em>Inicio</h2>
           </b-nav-item>
           
           <b-nav-item
@@ -27,7 +26,7 @@
               tableView = false
               cardView = false
             ">
-            <h2><i class="icons_nav fas fa-user-astronaut"></i>Artistas</h2>
+            <h2><em class="icons_nav fas fa-user-astronaut"></em>Artistas</h2>
           </b-nav-item>
 
           <b-nav-item
@@ -37,7 +36,7 @@
               cardView = true
               tableView = false
             ">
-            <h2><i class="icons_nav fas fa-book"></i>Álbuns</h2>
+            <h2><em class="icons_nav fas fa-book"></em>Álbuns</h2>
           </b-nav-item>
 
           <b-nav-item
@@ -47,7 +46,7 @@
               tableView = true
               cardView = false
             ">
-            <h2><i class="icons_nav fas fa-music"></i>Playlists</h2>
+            <h2><em class="icons_nav fas fa-music"></em>Playlists</h2>
           </b-nav-item>
 
           <b-nav-item
@@ -57,7 +56,7 @@
               cardView = true
               tableView = false
             ">
-            <h2><i class="icons_nav fas fa-heart"></i>Curtidas</h2>
+            <h2><em class="icons_nav fas fa-heart"></em>Curtidas</h2>
           </b-nav-item>
         </b-navbar-nav>
     </div>
@@ -76,12 +75,12 @@
         <div class="top-bar">
             <div class="container">
                 <div class="player-controls">
-                    <a href="#" class="icon_control" id="jplayer_repeat"><i class="icn_ctrl fa-2x fas fa-redo-alt icons_secundarios status_repeteco"></i></a>
-                    <a href="#" class="icon_control" id="jplayer_anterior"><i class="icn_ctrl fa-2x fas fa-fast-backward"></i></a>
-                    <a href="#" class="icon_control" id="jplayer_play"><i class="icn_ctrl fa-2x fas fa-play-circle"></i></a>
-                    <a href="#" class="icon_control" id="jplayer_pause"><i class="icn_ctrl fa-2x fas fa-pause-circle"></i></a>
-                    <a href="#" class="icon_control" id="jplayer_proximo"><i class="icn_ctrl fa-2x fas fa-fast-forward"></i></a>
-                    <a href="#" class="icon_control" id="jplayer_random"><i class="icn_ctrl fa-2x fas fa-random icons_secundarios status_random"></i></a>
+                    <a href="#" class="icon_control" id="jplayer_repeat"><em class="icn_ctrl fa-2x fas fa-redo-alt icons_secundarios status_repeteco"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_anterior"><em class="icn_ctrl fa-2x fas fa-fast-backward"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_pause"><em class="icn_ctrl fa-2x fas fa-pause-circle"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_proximo"><em class="icn_ctrl fa-2x fas fa-fast-forward"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_random"><em class="icn_ctrl fa-2x fas fa-random icons_secundarios status_random"></em></a>
                 </div>
 
                 <div id="opcs_progress" class="player-timeline">
@@ -91,15 +90,15 @@
                 </div>
 
                 <div class="volume_control">
-                    <i class="fas fa-volume-down fa-2x" onclick="desliga_som()"></i>
+                    <em class="fas fa-volume-down fa-2x" onclick="desliga_som()"></em>
                     <div id="jplayer_volume_bar" class="jp-volume-bar">
                         <div id="jplayer_volume_bar_value" class="jp-volume-bar-value"></div>
                     </div>
                 </div>
 
-                <i class="fa-2x fas fa-cog" id="btn_abrir_configuracoes"></i>
+                <em class="fa-2x fas fa-cog" id="btn_abrir_configuracoes"></em>
 
-                <i class="fa-2x fas fa-arrow-left" id="btn_mostrar_playlist"></i>
+                <em class="fa-2x fas fa-arrow-left" id="btn_mostrar_playlist"></em>
             </div>
         </div>
     </div>
@@ -273,7 +272,6 @@ export default {
       // por this.$axios.
       // Veja mais sobre em https://axios.nuxtjs.org/usage
       this.$axios.$delete(`artista/${nome}`).then((response) => {
-        let msg = response;
         
         this.updateArtista();
       })      

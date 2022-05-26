@@ -1,14 +1,15 @@
 const db = require("../database")
 const sequelize = db.sequelize
 const {Model, DataTypes} = require('sequelize');
-class Artista extends Model {
-    static associate({Musica}){
-        this.hasMany(Musica, {foreignKey: 'idArtista', as: 'musicas'})
+
+class Musica extends Model {
+    static associate({Artista}) {
+        this.belongsTo(Artista, {foreignKey: 'idArtista', as: 'artista'})
     }
 }
 
-Artista.init({
-    foto: {
+Musica.init({
+    artista: {
         type: DataTypes.STRING, 
         allowNull: false
     },
@@ -16,14 +17,18 @@ Artista.init({
         type: DataTypes.STRING,
         allowNull: false
     },
-    seguidores: {
+    duracao: {
+        type: DataTypes.TIME,
+        defaultValue: "00:00"
+    },
+    estilo: {
         type: DataTypes.STRING,
         defaultValue: "0"
     }
 }, {
     sequelize,
-    tableName: 'artistas',
-    modelName: 'Artista'
+    tableName: 'musicas',
+    modelName: 'Musica'
 });
 
-module.exports = Artista;
+module.exports = Musica;

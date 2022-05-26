@@ -1,33 +1,39 @@
-const Artista = require("./model/Artista");
+'use strict';
 
-// Classe que serve de banco de dados temporário. Será substituído pelo ORM.
-class Banco {
-    constructor() {
-        this.artistas = []
-    }
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const env = process.env.NODE_ENV || 'development';
+const config = require(path.join(__dirname+'../../../../../config/config.json'))[env];
+const db = {};
+const basename = path.basename(__filename);
 
-    getAllArtistas() {
-        return this.artistas;
-    }
-
-    addArtista(novoArtista) {
-        if(novoArtista instanceof Artista){
-            this.artistas.push(novoArtista)
-        }else{
-            throw Error("DB: Objeto não é do tipo Artista")
-        }
-    }
-
-    findByName(nome) {
-          return this.artistas.filter(artista => artista.nome === nome)[0];
-    }
-
-    removeByName(nome) {
-        return this.artistas.splice(this.artistas.findIndex(artista => artista.nome === nome), 1)
-    }
-
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-let banco = new Banco();
+fs
+  .readdirSync(__dirname)
+  .filter(file => {
+    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+  })
+  .forEach(file => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+  });
 
-module.exports = banco;
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+
+
+module.exports = db;

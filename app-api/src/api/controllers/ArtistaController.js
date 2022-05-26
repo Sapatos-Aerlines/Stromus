@@ -20,7 +20,6 @@ module.exports = {
 
     // handler para adcionar novo artista no banco
     add: function (req, res) {
-
         ArtistaRepository.addNewArtista(
             req.body
         ).then((status) => {
@@ -35,8 +34,8 @@ module.exports = {
         });
     },
 
-    // handler para recuperar um artista por patrimonio
-    get: function (req, res) {
+    // handler para recuperar um artista por id
+    getById: function (req, res) {
         const artistaId = req.params.artistaId;
         ArtistaRepository.getArtistaById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam
@@ -53,11 +52,28 @@ module.exports = {
             });
     },
 
-    // handler para remover um item pelo seu código de patrimonio
+    // handler para recuperar um artista por nome
+    getByName: function (req, res) {
+        const artistaId = req.params.nome;
+        ArtistaRepository.getArtistaByName(
+            artistaId).then((artista) => {
+                if(artista){
+                    res.statusCode = 200; // Status HTTP para OK;
+                    res.set("Content-Type", "application/json");
+                    res.send(JSON.stringify(artista));                    
+                } else{
+                    res.statusCode = 404; // Status HTTP para No Found;
+                    res.set("Content-Type", "application/json");
+                    res.send({status: `Não foi possível encontrar o artista para ${artistaId}.`});
+                }                
+            });
+    },
+
+    // handler para remover um artista pelo seu id (estamos usando o nome para remover)
     remove: function (req, res) {
-        ArtistaRepository.removeArtistaById(
+        ArtistaRepository.removeArtistaByName(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
-            req.params.artistaId).then((status) => {
+            req.params.id).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";
                 res.set("Content-Type", "application/json");
                 res.send(JSON.stringify(status));

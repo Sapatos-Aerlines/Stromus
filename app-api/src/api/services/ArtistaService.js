@@ -2,13 +2,15 @@ const ArtistaRepository = require("../repositories/ArtistaRepository");
 
 module.exports = {
     getAllArtistas: async function (){
-        const data = await ArtistaRepository.all();
-        return data;
+        return ArtistaRepository.all();
     },
 
     getArtistaById: async function (artistaId){
-        const data = await ArtistaRepository.find(artistaId)
-        return data;
+        return ArtistaRepository.findById(artistaId)
+    },
+
+    getArtistaByName: async function (artistaId){
+        return ArtistaRepository.findByName(artistaId)
     },
 
     addNewArtista: async function (artista){
@@ -17,8 +19,9 @@ module.exports = {
         else return {status: "Não foi possível criar o artista"}
     },
     
-    removeArtistaById: async function(artistaId) {
-        const status = await ArtistaRepository.remove(artistaId);
+
+    removeArtistaByName: async function (nomeArtista) { 
+        const status = await ArtistaRepository.remove(nomeArtista);
         if(status) return {status: "Artista removido com sucesso."}
         else return {status: "Artista não encontrado."}
     }

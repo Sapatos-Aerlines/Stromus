@@ -1,33 +1,21 @@
-const Artista = require("./model/Artista");
+'use strict';
 
-// Classe que serve de banco de dados temporário. Será substituído pelo ORM.
-class Banco {
-    constructor() {
-        this.artistas = []
-    }
-
-    getAllArtistas() {
-        return this.artistas;
-    }
-
-    addArtista(novoArtista) {
-        if(novoArtista instanceof Artista){
-            this.artistas.push(novoArtista)
-        }else{
-            throw Error("DB: Objeto não é do tipo Artista")
-        }
-    }
-
-    findByName(nome) {
-          return this.artistas.filter(artista => artista.nome === nome)[0];
-    }
-
-    removeByName(nome) {
-        return this.artistas.splice(this.artistas.findIndex(artista => artista.nome === nome), 1)
-    }
-
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const env = process.env.NODE_ENV || 'development';
+const config = require(path.join(__dirname+'../../../../../config/config.json'))[env];
+const db = {};
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-let banco = new Banco();
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-module.exports = banco;
+
+
+module.exports = db;

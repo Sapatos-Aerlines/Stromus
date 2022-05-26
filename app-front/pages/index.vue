@@ -6,10 +6,9 @@
     <b-navbar id="painel_infos">
       <h1 id="stromus_title">Stromus</h1>
 
-
       <div id="buttons_nav">
         <b-navbar-nav>
-          <b-nav-item
+          <b-nav-item class='icons_nav_menu_lateral'
             @click="
               inicioView = true
               artistaView = false
@@ -19,7 +18,7 @@
             <h2><em class="icons_nav fas fa-chess-queen"></em>Inicio</h2>
           </b-nav-item>
           
-          <b-nav-item
+          <b-nav-item class='icons_nav_menu_lateral'
             @click="
               inicioView = false
               artistaView = true
@@ -29,7 +28,7 @@
             <h2><em class="icons_nav fas fa-user-astronaut"></em>Artistas</h2>
           </b-nav-item>
 
-          <b-nav-item
+          <b-nav-item class='icons_nav_menu_lateral'
             @click="
               inicioView = false
               artistaView = false
@@ -39,7 +38,7 @@
             <h2><em class="icons_nav fas fa-book"></em>Álbuns</h2>
           </b-nav-item>
 
-          <b-nav-item
+          <b-nav-item class='icons_nav_menu_lateral'
             @click="
               inicioView = false
               artistaView = false
@@ -49,7 +48,7 @@
             <h2><em class="icons_nav fas fa-music"></em>Playlists</h2>
           </b-nav-item>
 
-          <b-nav-item
+          <b-nav-item class='icons_nav_menu_lateral'
             @click="
               inicioView = false
               artistaView = false
@@ -151,24 +150,30 @@
       <!-- Tabela do iventário -->
       <div class="invent-table" v-if="artistaView" id="lista_artistas">
 
-        <b-button v-b-modal.modal-novo-item variant="dark">Adicionar um artista</b-button>
+        <div class="barra_topo_opcoes">
+          <b-button v-b-modal.modal-novo-item variant="dark" class="btn_add">Adicionar um artista</b-button>
 
-        <b-nav-form>
-          <b-form-input
-            size="sm"
-            v-model="artistaSearch"
-            class="sr-sm-3"
-            placeholder="Buscar artista"
-          ></b-form-input>
-        </b-nav-form>
+          <b-nav-form class="input_pesquisa">
+            <b-form-input
+              size="sm"
+              v-model="artistaSearch"
+              class="input_pesquisa_tam"
+              placeholder="Buscar artista"
+            ></b-form-input>
+          </b-nav-form>
+        </div>
 
         <b-table id="items-table" borderless thead-class="d-none" fixed
                 :per-page="perPage" 
                 :current-page="currentPage" 
                 v-bind:items="filterSearch">
+              
+              <template #cell(id)="cellData">
+                <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
+              </template>
 
               <template #cell(foto)="cellData">
-                  <img id="foto_artista" v-bind:src=cellData.item.foto >
+                  <img id="foto_artista" v-bind:src="cellData.item.foto">
               </template>
 
               <template #cell(nome)="cellData">
@@ -176,11 +181,8 @@
                   <b-button v-on:click="removeSelectedArtista(cellData.item.nome)">Excluir artista</b-button>
               </template>
 
-              <template #cell(seguidores)="cellData2">
-                  <p class='seguidores_artista'>{{cellData2.item.seguidores}} seguidores</p>
-              </template>
-
-              <template>
+              <template #cell(seguidores)="cellData">
+                  <p class='seguidores_artista'>{{cellData.item.seguidores}} seguidores</p>
               </template>
         </b-table>
       </div>
@@ -280,7 +282,8 @@ export default {
 
   computed: {
     filterSearch: function () {
-      console.log("Termo de busca:" + this.artistaSearch);
+      console.log("Termo de busca:"+ this.artistaSearch);
+
       if (this.artistaSearch.length > 0) {
         return this.artistas.filter((artista) => 
           artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
@@ -295,6 +298,7 @@ export default {
 
 <style scoped>
   @import '../static/style.css';
+  @import '../static/responsividade.css';
 
     .invent-table {
         padding: 0 100px;

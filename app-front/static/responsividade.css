@@ -1,0 +1,31 @@
+/* Desktops */
+@media only screen and (min-width: 1367px) and (max-width: 2200px){
+
+}
+
+/* Notebooks */
+@media only screen and (min-width: 700px) and (max-width: 1366px){
+    #painel_infos, .player-display, #capa_album, #infos_faixa{
+        width: 240px;
+    }
+    #infos_faixa, #capa_album{
+        height: 240px;
+    }
+    .player-controls{
+        margin-left: -9% !important;
+    }
+    .player-display{
+        padding-top: 132px;
+    }
+    #stromus_title{
+        font-size: 32px;
+    }
+    h2, .h2{
+        font-size: 25px !important;
+    }
+}
+
+/* Celulares e dispositivos móveis */
+@media only screen and (min-width: 0px ) and (max-width: 699px){
+
+}

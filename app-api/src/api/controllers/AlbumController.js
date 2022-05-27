@@ -1,13 +1,10 @@
-const MusicaService = require("../services/MusicaService");
+const AlbumService = require("../services/AlbumService");
 
 module.exports = {
 
     listAll: function (req, res) {
-        //Blocking operation (Não fazer)
-        //return ItemPatrimonioRepository.all()
-        // console.log(ItemPatrimonioRepository.all());
         res.statusCode = 200; // Status HTTP para OK;
-        MusicaService.getAllMusicas().then(
+        AlbumService.getAllAlbuns().then(
             musicas => {
                 res.set("Content-Type", "application/json");
                 res.send(JSON.stringify(musicas));
@@ -15,11 +12,11 @@ module.exports = {
         )
     },
 
-    // handler para adcionar nova música no banco
+    // handler para adcionar novo álbum no banco
     add: function (req, res) {
-        const {artista, nome, duracao, estilo} = req.body
-        MusicaService.addNewMusica(
-            {artista, nome, duracao, estilo}
+        const {nome, dataLancamento, artista} = req.body
+        AlbumService.addNewAlbum(
+            {nome, dataLancamento, artista}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
             res.set("Content-Type", "application/json");
@@ -35,30 +32,30 @@ module.exports = {
     // handler para recuperar uma música por id
     getById: function (req, res) {
         const id = req.params.id;
-        MusicaService.getById(
+        AlbumService.getById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam
-            id).then((musica) => {
-                if(musica){
+            id).then((album) => {
+                if(album){
                     res.statusCode = 200; // Status HTTP para OK;
                     res.set("Content-Type", "application/json");
-                    res.send(JSON.stringify(musica));                    
+                    res.send(JSON.stringify(album));                    
                 } else{
                     res.statusCode = 404; // Status HTTP para No Found;
                     res.set("Content-Type", "application/json");
-                    res.send({status: `Não foi possível encontrar a música para ${id}.`});
+                    res.send({status: `Não foi possível encontrar o álbum para ${id}.`});
                 }                
             });
     },
 
-    // handler para recuperar uma música por nome
+    // handler para recuperar um álbum por nome
     getByName: function (req, res) {
         const nome = req.params.nome;
-        MusicaService.getMusicaByNome(
-            nome).then((musica) => {
-                if(musica){
+        AlbumService.getAlbumByNome(
+            nome).then((album) => {
+                if(album){
                     res.statusCode = 200; // Status HTTP para OK;
                     res.set("Content-Type", "application/json");
-                    res.send(JSON.stringify(musica));                    
+                    res.send(JSON.stringify(album));                    
                 } else{
                     res.statusCode = 404; // Status HTTP para No Found;
                     res.set("Content-Type", "application/json");
@@ -67,26 +64,42 @@ module.exports = {
             });
     },
 
-    // handler para recuperar uma música por musica
-    getByArtista: function (req, res) {
-        const nomeArtista = req.params.nomeArtista;
-        MusicaService.getMusicaByArtista(
-            nomeArtista).then((musica) => {
-                if(musica){
+    getByAno: function (req, res) {
+        const ano = req.params.ano;
+        AlbumService.getAlbumByAno(ano).then(
+            (album) => {
+                if(album){
                     res.statusCode = 200; // Status HTTP para OK;
                     res.set("Content-Type", "application/json");
-                    res.send(JSON.stringify(musica));                    
+                    res.send(JSON.stringify(album));                    
                 } else{
                     res.statusCode = 404; // Status HTTP para No Found;
                     res.set("Content-Type", "application/json");
-                    res.send({status: `Não foi possível encontrar a música com artista ${nomeArtista}.`});
+                    res.send({status: `Não foi possível o álbum com o ano ${ano}.`});
+                }
+            });
+    },
+
+    // handler para recuperar um álbum por artista
+    getByArtista: function (req, res) {
+        const nomeArtista = req.params.nomeArtista;
+        AlbumService.getAlbumByArtista(
+            nomeArtista).then((album) => {
+                if(album){
+                    res.statusCode = 200; // Status HTTP para OK;
+                    res.set("Content-Type", "application/json");
+                    res.send(JSON.stringify(album));                    
+                } else{
+                    res.statusCode = 404; // Status HTTP para No Found;
+                    res.set("Content-Type", "application/json");
+                    res.send({status: `Não foi possível encontrar o álbum com artista ${nomeArtista}.`});
                 }                
             });
     },
 
-    // handler para remover uma música pelo seu nome
+    // handler para remover um álbum pelo seu nome
     removeByName: function (req, res) {
-        MusicaService.removeMusicaByName(
+        AlbumService.removeAlbumByName(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.nome).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";
@@ -96,9 +109,9 @@ module.exports = {
         );
     },
 
-    // handler para remover uma música pelo seu id
+    // handler para remover um álbum pelo seu id
     removeById: function (req, res) {
-        MusicaService.removeMusicaById(
+        AlbumService.removeAlbumById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.id).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";

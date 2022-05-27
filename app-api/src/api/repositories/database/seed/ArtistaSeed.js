@@ -1,4 +1,4 @@
-const Artista = require("../model/Artista");
+const Artista = require("../models/Artista");
 
 module.exports = (database) => {
     database.addArtista(

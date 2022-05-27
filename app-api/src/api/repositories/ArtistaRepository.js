@@ -1,4 +1,4 @@
-const Artista = require("./database/model/Artista");
+const Artista = require("./database/models/Artista");
 
 class ArtistaRepository{
     constructor(){

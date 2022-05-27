@@ -1,0 +1,42 @@
+Essa pasta é padrão buscada pelo sequelize pra criar o banco de dados, não pode alterar o caminho dela.
+Aqui a gente define todos os banco de dados, pra teste, prod e dev.
+Para criar, tem que instalar no terminal o sequelize-cli: npm install -g sequelize-cli e depois rodar o comando: sequelize db:create e pronto, o banco será criado
+A gente também vai utilizar o framework express para sincronizar os modelos com o banco de dados, então instále-o também: npm install express
+
+COMANDOS ÚTEIS
+
+**IMPORTANTE**
+Antes de realizar qualquer comando abaixo, é necessário acessar o diretório database:
+cd /app-api/src/repositories/database
+
+Para criar um novo modelo no banco de dados, podemos gerar o arquivo automaticamento e configurado utilizando o sequelize-cli:
+npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+Trocando os campos necessários.
+
+Após a criação e qualquer alteração feita em um model, para migrar essa atualização para o banco, rodamos:
+npx sequelize-cli db:migrate
+E a alteração será feita no banco. Um arquivo também será criado registrando essa migração, é possível desfaze-la se necessário.
+
+Para desfazer a ÚLTIMA migração:
+npx sequelize-cli db:migrate:undo
+Isso é útil caso queira alterar algum dado e refazer a migração.
+
+Para desfazer uma específica:
+npx sequelize-cli db:migrate:undo:all --to XXXXXXXXXXXXXX-create-posts.js
+Substituindo pelo nome do arquivo.
+
+Para criar um seed, com dados para teste, rodamos:
+npx sequelize-cli seed:generate --name demo-user
+Trocando pelo model do nosso projeto e o arquivo é gerado.  
+
+Para rodar todas as seeds:
+npx sequelize-cli db:seed:all
+
+Para desfazer a última seed:
+npx sequelize-cli db:seed:undo
+
+Para desfazer uma seed específica:
+npx sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
+
+Desfazer todas as seeds:
+npx sequelize-cli db:seed:undo:all

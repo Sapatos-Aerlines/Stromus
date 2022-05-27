@@ -1,9 +1,9 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'app-front',
+    title: 'Stromus',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'pt',
     },
     meta: [
       { charset: 'utf-8' },

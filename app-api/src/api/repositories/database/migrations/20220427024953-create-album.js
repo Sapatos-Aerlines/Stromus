@@ -23,8 +23,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         references: {
           model: 'artistas',
-          key: 'id',
-          as: 'idArtista'
+          key: 'id'
         }
       },
       createdAt: {

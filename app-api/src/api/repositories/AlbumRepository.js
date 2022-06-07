@@ -1,32 +1,29 @@
-const Album = require("./database/models/Album");
+const { Album } = require("./database/models/index")
 
-class AlbumRepository{
-    constructor(){
-        this.model = Album;
+class AlbumRepository {
+
+    async create(album) {
+        return await Album.create(album);
     }
 
-    async create(album){
-        return this.model.create(album);
-    }
-
-    async findById(idAlbum){
-        return this.model.findAll({
+    async findById(idAlbum) {
+        return await Album.findAll({
             where: {
                 id: idAlbum
             }
         });
     }
 
-    async findByName(nomeAlbum){
-        return this.model.findAll({
+    async findByName(nomeAlbum) {
+        return await Album.findAll({
             where: {
                 nome: nomeAlbum
             }
         });
     }
 
-    async findByArtista(nomeArtista){
-        return this.model.findAll({
+    async findByArtista(nomeArtista) {
+        return await Album.findAll({
             where: {
                 artista: nomeArtista
             }
@@ -34,19 +31,19 @@ class AlbumRepository{
     }
 
     async findByAnoLancamento(ano) {
-        return this.model.findAll({
+        return await Album.findAll({
             where: {
                 dataLancamento: ano
             }
         })
     }
 
-    async all(){
-        return this.model.findAll();
+    async all() {
+        return await Album.findAll();
     }
 
     async removeByName(nomeAlbum) {
-        return this.model.destroy({
+        return await Album.destroy({
             where: {
                 nome: nomeAlbum
             }
@@ -54,7 +51,7 @@ class AlbumRepository{
     }
 
     async removeById(idAlbum) {
-        return this.model.destroy({
+        return await Album.destroy({
             where: {
                 id: idAlbum
             }

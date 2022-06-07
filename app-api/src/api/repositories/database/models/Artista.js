@@ -1,4 +1,3 @@
-'use strict';
 const {
   Model
 } = require('sequelize');
@@ -21,21 +20,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   Artista.init({
     foto: {
-      type: DataTypes.STRING, 
-      allowNull: false
-  },
-  nome: {
       type: DataTypes.STRING,
       allowNull: false
-  },
-  seguidores: {
+    },
+    nome: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    seguidores: {
       type: DataTypes.STRING,
       defaultValue: "0"
-  }
+    }
   }, {
-    sequelize,
+    sequelize: sequelize,
     tableName: 'artistas',
-    modelName: 'Artista',
+    modelName: 'Artista'
   });
   return Artista;
-};
+}

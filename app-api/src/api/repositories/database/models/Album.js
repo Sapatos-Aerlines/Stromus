@@ -1,4 +1,3 @@
-'use strict';
 const {
   Model
 } = require('sequelize');
@@ -13,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       })
       this.belongsTo(models.Artista, {
         foreignKey: 'idArtista',
-        as: 'idArtista',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       })
@@ -25,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     artista: DataTypes.STRING,
     idArtista: DataTypes.INTEGER,
   }, {
-    sequelize,
+    sequelize: sequelize,
     tableName: 'albuns',
     modelName: 'Album',
   });
   return Album;
-};
+}

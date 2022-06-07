@@ -1,16 +1,14 @@
-const Artista = require("./database/models/Artista");
+const { Artista } = require("./database/models/index")
 
 class ArtistaRepository{
-    constructor(){
-        this.model = Artista;
-    }
 
     async create(artista){
-        return this.model.create(artista);
+        console.log(Artista);
+        return await Artista.create(artista);
     }
 
     async findById(idArtista){
-        return this.model.findAll({
+        return await Artista.findAll({
             where: {
                 id: idArtista
             }
@@ -18,7 +16,7 @@ class ArtistaRepository{
     }
 
     async findByName(nomeArtista){
-        return this.model.findAll({
+        return await Artista.findAll({
             where: {
                 nome: nomeArtista
             }
@@ -26,11 +24,12 @@ class ArtistaRepository{
     }
 
     async all(){
-        return this.model.findAll();
+        console.log("ARTISTA:"+Artista);
+        return await Artista.findAll();
     }
 
     async remove(nomeArtista){
-        return this.model.destroy({
+        return await Artista.destroy({
             where: {
                 nome: nomeArtista
             }

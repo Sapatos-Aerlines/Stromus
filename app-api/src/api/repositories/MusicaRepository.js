@@ -1,60 +1,57 @@
-const Musica = require("./database/models/Musica");
+const { Musica } = require("./database/models/index")
 
-class MusicaRepository{
-    constructor(){
-        this.model = Musica;
+class MusicaRepository {
+
+    async create(musica) {
+        return await Musica.create(musica);
     }
 
-    async create(musica){
-        return this.model.create(musica);
-    }
-
-    async findById(idmusica){
-        return this.model.findAll({
+    async findById(idmusica) {
+        return await Musica.findAll({
             where: {
                 id: idmusica
             }
         });
     }
 
-    async findByArtista(nomeArtista){
-        return this.model.findAll({
+    async findByArtista(nomeArtista) {
+        return await Musica.findAll({
             where: {
                 artista: nomeArtista
             }
         });
     }
 
-    async findByEstilo(_estilo){
-        return this.model.findAll({
+    async findByEstilo(_estilo) {
+        return await Musica.findAll({
             where: {
                 estilo: _estilo
             }
         });
     }
 
-    async findByName(nomeMusica){
-        return this.model.findAll({
+    async findByName(nomeMusica) {
+        return await Musica.findAll({
             where: {
                 nome: nomeMusica
             }
         });
     }
 
-    async all(){
-        return this.model.findAll();
+    async all() {
+        return await Musica.findAll();
     }
 
-    async removeByName(nomeMusica){
-        return this.model.destroy({
+    async removeByName(nomeMusica) {
+        return await Musica.destroy({
             where: {
                 nome: nomeMusica
             }
         });
     }
 
-    async removeById(idMusica){
-        return this.model.destroy({
+    async removeById(idMusica) {
+        return await Musica.destroy({
             where: {
                 id: idMusica
             }

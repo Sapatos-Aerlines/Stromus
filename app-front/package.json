@@ -12,11 +12,8 @@
     "lintfix": "prettier --write --list-different ."
   },
   "dependencies": {
-<<<<<<< HEAD
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
-=======
->>>>>>> 9a7826944660264333dcc69af521065ea35a1bde
     "@nuxtjs/axios": "^5.13.6",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
@@ -30,10 +27,7 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@fortawesome/fontawesome-free": "^6.1.1",
-=======
->>>>>>> 9a7826944660264333dcc69af521065ea35a1bde
     "eslint-config-prettier": "^8.3.0",
     "prettier": "^2.5.1"
   }

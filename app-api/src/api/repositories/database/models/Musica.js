@@ -35,9 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     estilo: {
         type: DataTypes.STRING,
         defaultValue: "0"
-    },
-    idArtista: DataTypes.INTEGER,
-    idAlbum: DataTypes.INTEGER,
+    }
   }, {
     sequelize,
     tableName: 'musicas',

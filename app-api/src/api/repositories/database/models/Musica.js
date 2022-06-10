@@ -6,12 +6,14 @@ module.exports = (sequelize, DataTypes) => {
   class Musica extends Model {
     static associate(models) {
       this.belongsTo(models.Artista, {
-          foreignKey: 'idArtista',
+          foreignKey: 'id',
+          as: 'idArtista',
           onDelete: 'CASCADE',
           onUpdate: 'CASCADE'
       })
       this.belongsTo(models.Album, {
-        foreignKey: 'idAlbum',
+        foreignKey: 'id',
+        as: 'idAlbum',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       })

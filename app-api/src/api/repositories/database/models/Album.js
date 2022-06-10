@@ -5,13 +5,14 @@ module.exports = (sequelize, DataTypes) => {
   class Album extends Model {
     static associate(models) {
       this.hasMany(models.Musica, {
-        foreignKey: 'idMusica',
+        foreignKey: 'id',
         as: 'musicas',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       })
       this.belongsTo(models.Artista, {
-        foreignKey: 'idArtista',
+        foreignKey: 'id',
+        as: 'idArtista',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       })

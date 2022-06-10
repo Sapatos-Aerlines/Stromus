@@ -39,14 +39,6 @@ module.exports = {
           key: 'id',
           as: 'idAlbum',
         }
-      },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     });
   },

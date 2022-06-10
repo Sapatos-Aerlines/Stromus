@@ -3,8 +3,11 @@ Aqui a gente define todos os banco de dados, pra teste, prod e dev.
 Para criar, tem que instalar no terminal o sequelize-cli: npm install -g sequelize-cli e depois rodar o comando: sequelize db:create e pronto, o banco será criado
 A gente também vai utilizar o framework express para sincronizar os modelos com o banco de dados, então instále-o também: npm install express
 
+<<<<<<< HEAD
 sequelize db:migrate
 
+=======
+>>>>>>> 9a7826944660264333dcc69af521065ea35a1bde
 COMANDOS ÚTEIS
 
 **IMPORTANTE**

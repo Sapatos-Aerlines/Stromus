@@ -390,21 +390,21 @@
         console.log(ex);
       } 
 
-      // try {
-      //   const response = await $axios.$get('album');
-      //   albuns = response;
-      // } catch (ex) {
-      //   console.log(ex);
-      // }
+      try {
+        const response = await $axios.$get('album');
+        albuns = response;
+      } catch (ex) {
+        console.log(ex);
+      }
 
-      // try {
-      //   const response = await $axios.$get('musica');
-      //   musicas = response;
-      // } catch (ex) {
-      //   console.log(ex);
-      // }
+      try {
+        const response = await $axios.$get('musica');
+        musicas = response;
+      } catch (ex) {
+        console.log(ex);
+      }
 
-      return { artistas, totalRows }
+      return { artistas, albuns, musicas, totalRows }
     },
     components: { CardArtista },
     name: 'IndexPage',

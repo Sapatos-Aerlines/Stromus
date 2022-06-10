@@ -41,6 +41,10 @@ module.exports = {
         else return {status: "Álbum não encontrado."}
     },
     
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9a7826944660264333dcc69af521065ea35a1bde
     removeAlbumByName: async function (nomeAlbum) { 
         const status = await AlbumRepository.removeByName(nomeAlbum);
         if(status) return {status: "Álbum removido com sucesso."}

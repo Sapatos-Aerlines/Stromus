@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   Album.init({
     nome: DataTypes.STRING,
     dataLancamento: DataTypes.DATE,
-    artista: DataTypes.STRING,
+    artista: DataTypes.STRING
   }, {
     sequelize: sequelize,
     tableName: 'albuns',

@@ -133,12 +133,12 @@
     <b-modal id="modal-novo-artista" title="Novo Artista" hide-footer>
       <b-overlay :show="show" rounded="sm">
         <b-form v-on:submit="createNewArtista">
-          <label class="mr-sm-2" for="input-patrimonio">Nome do artista:</label>
+          <label class="mr-sm-2" for="input_nome_artista">Nome do artista:</label>
           <b-form-input
-            id="input-patrimonio"
+            id="input_nome_artista"
             v-model="novoArtista.nome"
             class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Ex: Banda Dejavu"
+            placeholder="Ex: Banda Djavú"
           ></b-form-input>
 
           <label class="mr-sm-2" for="input-responsavel">Seguidores:</label>
@@ -156,7 +156,7 @@
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="Foto do artista"
           ></b-form-input>
-
+          
           <br>
 
           <b-button type="submit" variant="primary" @click="show = !show">Registrar</b-button>
@@ -208,7 +208,7 @@
       </b-overlay>
     </b-modal>
 
-   <!-- Modal para inserir uma nova música -->
+    <!-- Modal para inserir uma nova música -->
     <b-modal id="modal-nova-musica" title="Nova Música" hide-footer>
       <b-overlay :show="show" rounded="sm">
         <b-form v-on:submit="createNewMusica">
@@ -282,7 +282,7 @@
 
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button v-on:click="removeSelectedArtista(cellData.item.nome)">Excluir artista</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedArtista(cellData.item.nome)">Remover</b-button>
               </template>
 
               <template #cell(seguidores)="cellData">
@@ -320,9 +320,13 @@
                   <img class="capa_album_lista" v-bind:src="cellData.item.foto">
               </template>
 
+              <template #cell(dataLancamento)="cellData">
+                <h3>{{cellData.item.dataLancamento}}</h3>
+              </template>
+
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button v-on:click="removeSelectedArtista(cellData.item.nome)">Excluir álbum</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedAlbum(cellData.item.nome)">Remover</b-button>
               </template>
         </b-table>
       </div>
@@ -335,7 +339,7 @@
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="musicaSearch"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -357,15 +361,25 @@
 
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button v-on:click="removeSelectedArtista(cellData.item.nome)">Excluir música</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedMusica(cellData.item.nome)">Remover</b-button>
               </template>
         </b-table>
-      
-      
       </div>
 
       <!-- Tabela de músicas curtidas -->
       <div class="invent-table" v-if="curtidaView" id="lista_albuns">
+        <div class="barra_topo_opcoes">
+
+          <b-nav-form class="input_pesquisa">
+            <b-form-input
+              size="sm"
+              v-model="artistaSearch"
+              class="input_pesquisa_tam"
+              placeholder="Pesquisar"
+            ></b-form-input>
+          </b-nav-form>
+        </div>
+
         <h1 class="titulo_pag musicas_curtidas">Suas músicas curtidas <em class="icons_nav fas fa-heart"></em></h1>
         <div id="lista_faixas_curtidas"></div>
       </div>
@@ -430,7 +444,7 @@
           novoArtista: {
             foto: null,
             nome: null,
-            seguidores: 0
+            seguidores: null
           },
           novoAlbum : {
             capa : null,
@@ -556,32 +570,46 @@
     computed: {
       filterSearchArtista: function () {
 
-        if (this.artistaSearch.length > 0) {
-          return this.artistas.filter((artista) => 
-            artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-          )
-        } else {
-          return this.artistas;
+        try{
+          if(this.artistas.length > 0){
+            if (this.artistaSearch.length > 0) {
+              return this.artistas.filter((artista) => 
+                artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+              )
+            } else {
+              return this.artistas;
+            }
+          }
+        }catch(err){
+          return console.log("Não há artistas registrados para pesquisar");
         }
       },
       filterSearchAlbum: function () {
-
-        if (this.artistaSearch.length > 0) {
-          return this.albuns.filter((album) => 
-            album.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-          )
-        } else {
-          return this.albuns;
+        try{
+          if(this.albuns.length > 0){
+            if (this.artistaSearch.length > 0) {
+              return this.albuns.filter((album) => 
+                album.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+              )
+            } else {
+              return this.albuns;
+            }
+          }
+        }catch(err){
+          return console.log("Não há álbuns registrados para pesquisar");
         }
       },
       filterSearchMusica: function () {
-
-        if (this.artistaSearch.length > 0) {
-          return this.musicas.filter((musica) => 
-            musica.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-          )
-        } else {
-          return this.musicas;
+        try{
+          if (this.artistaSearch.length > 0) {
+            return this.musicas.filter((musica) => 
+              musica.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+            )
+          } else {
+            return this.musicas;
+          }
+        }catch(err){
+          return console.log("Não há músicas registradas para pesquisar");
         }
       }
     },

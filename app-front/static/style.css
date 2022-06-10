@@ -504,12 +504,18 @@ hr{
     right: 28%;
     position: fixed;
 }
+.btn_remover{
+    border: solid 0px white;
+    color: rgb(167, 39, 39) !important;
+    background-color: rgb(252, 106, 106);
+}
 .input_pesquisa{
     position: absolute;
     margin-top: 4px;
 }
 .input_pesquisa_tam{
     top: 3%;
+    z-index: 90 !important;
     left: 21%;
     width: 300px;
     font-size: 20px;

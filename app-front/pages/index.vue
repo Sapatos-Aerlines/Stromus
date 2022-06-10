@@ -403,7 +403,7 @@
       } catch (ex) {
         console.log(ex);
       }
-
+ 
       return { artistas, albuns, musicas, totalRows }
     },
     components: { CardArtista },

@@ -1,0 +1,558 @@
+*{
+    transition: all .2s !important;
+    color: rgb(177, 177, 177) !important;
+    transition: background-color .5s linear, color .5s;
+    -o-transition: background-color .5s linear, color .5s;
+    -moz-transition: background-color .5s linear, color .5s;
+    -webkit-transition: background-color .5s linear, color .5s;
+}
+body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: black;
+    overflow-x: hidden !important;
+}
+.top-bar{
+    z-index: 3;
+    bottom: 0px;
+    width: 100%;
+    color: #888;
+    height: 50px;
+    position: fixed;
+    line-height: 30px;
+    background-color: #141414;
+    box-shadow: 0px 0px 15px black;
+    animation: favorita_faixa 2s !important;
+}
+.player-controls{
+    margin-left: -25% !important;
+}
+.icon_control{
+    padding: 10px;
+}
+.icons_secundarios{
+    color: rgb(105, 105, 105);
+}
+.top-bar .player-controls {
+    float: left;
+    padding: 10px;
+}
+.top-bar .player-controls span:hover {
+    color: #EEE;
+}
+.top-bar .player {
+    float: left;
+}
+.top-bar .player-timeline {
+    left: 50%;
+    float: left;
+    height: 40px;
+    width: 530px;
+    margin-top: 13px;
+    max-width: 530px;
+    position: absolute;
+    margin-left: -265px;
+}
+.top-bar .player-timeline-control {
+    float: left;
+    height: 4px;
+    width: 430px;
+    margin-top: 12px;
+    overflow: hidden;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    background: rgb(105, 105, 105);
+}
+#progress_bar{
+    width: 0%;
+    height: 4px;
+    border-radius: 5px;
+    transition: background-color .5s linear, width .1s;
+}
+a{
+    transition: color .2s;
+    color: rgb(141, 141, 141);
+    text-decoration: none !important;
+}
+a:hover{
+    color: #f0f0f0;;
+}
+.jp-controls{
+    float: left;
+}
+.bttn_player{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    float: left !important;
+    text-decoration: none !important;
+}
+#jplayer_volume_bar_value{
+    left: 5%;
+    z-index: 5 !important;
+    transition: width .2s;
+    transition: background-color .5s linear;
+}
+#jplayer_volume_bar{
+    margin-top: 15px;
+    background-color: rgb(105, 105, 105);
+}
+.jp-volume-bar {
+    left: 22px;
+    height: 5px;
+    float: right;
+    width: 100px;
+    cursor: pointer;
+    overflow: hidden;
+}
+.jp-volume-bar-value {
+    width: 0px;
+    height: 5px;
+}
+#fundo_capa{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-repeat: no-repeat;
+    animation: mostra_elemento 2s;
+    filter: grayscale(1) blur(2px);
+    background-size: cover !important;
+    transition: background-image .2s ease-in-out;
+    -webkit-transition: background-image .2s ease-in-out;
+    background: url("https://i.scdn.co/image/ab67616d0000b2734cf0b29eb06a92aa96acae64");
+}
+#player-current-track{
+    padding-right: 10px !important;
+}
+#playlist{
+    top: 0px;
+    z-index: 2;
+    width: 25%;
+    height: 93%;
+    right: 0%;
+    position: fixed;
+    overflow-y: auto;
+    padding-left: 5px;
+    overflow-x: hidden;
+    background-color: rgba(0, 0, 0, .7);
+}
+.volume_control{
+    width: 10%;
+    float: right;
+    margin-top: 9px;
+    margin-right: 12%;
+    padding-right: 10px;
+}
+.fa-volume-down{
+    margin-top: 3px;
+}
+.fa-arrow-left{
+    right: 0px;
+    height: 29px;
+    position: fixed;
+    margin-top: 12px;
+    margin-right: 20px;
+}
+#painel_infos{
+    z-index: 2;
+    float: left;
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    background-color: rgba(0, 0, 0, .5);
+}
+#infos_faixa{
+    z-index: 2;
+    float: left;
+    bottom: 10px;
+    width: 300px;
+    color: white;
+    height: 300px;
+    position: fixed;
+    animation: puxa_infos_faixa .5s;
+    background-color: rgba(0, 0, 0, .7);
+}
+#capa_album{
+    float: left;
+    width: 300px;
+    height: 300px;
+    overflow: hidden !important;
+}
+.numero_faixa{
+    float: left;
+    width: 50px;
+    font-size: 25px;
+    padding-top: 6px;
+    text-align: right;
+    padding-right: 10px;
+}
+.player-display {
+    width: 300px;
+    height: 100%;
+    position: fixed;
+    padding-top: 195px;
+    padding-left: 15px;
+    background: rgb(0, 0, 0, .5);
+}
+.nome_artista_pl{
+    float: left;
+    color: rgb(163, 163, 163);
+}
+.img_cover{
+    float: left;
+    width: 40px;
+    height: 40px;
+    padding-right: 15px;
+}
+#nome_artista{
+    font-size: 25px;
+    font-weight: bold;
+}
+#nome_faixa, .nome_faixa_pl{
+    float: left;
+    height: 16px;
+    font-weight: bold;
+    color: rgb(163, 163, 163);
+    transition: all .2s !important;
+}
+.nome_faixa_pl{
+    width: 50%;
+    height: 17px;
+    overflow: hidden;
+    color: white !important;
+    max-height: 30px !important;
+}
+#stromus_title{
+    top: 10px;
+    z-index: 5;
+    color: white;
+    position: fixed;
+    font-size: 40px;
+    padding-left: 1%;
+    text-shadow: 0px 0px 2px black;
+}
+.item_playlist{
+    width: 98%;
+    height: 40px;
+    overflow: hidden;
+    max-height: 40px;
+    border-radius: 5px;
+    transition: background-color .2s;
+}
+.item_playlist:hover{
+    background-color: rgba(68, 68, 68, .7);
+}
+.playing_now, .playing_now_cr{
+    width: 20px;
+    display: none;
+    margin-left: 30px;
+}
+.barra_1, .barra_2, .barra_3, .barra_4{
+    float: left;
+    height: 38px;
+    margin-top: 0px;
+    margin-left: 2px;
+    width: 3px !important;
+    transform: rotateY(180deg) !important;
+    animation: tocando_agora 1.5s infinite;
+}
+.barra_2{
+    animation-delay: 700ms;
+    animation: tocando_agora2 .8s infinite;
+}
+.barra_3{
+    animation-delay: 200ms;
+}
+.barra_4{
+    animation-delay: 500ms;
+    animation: tocando_agora2 1.2s infinite;
+}
+.curtir_faixa{
+    float: right;
+    margin-top: -13px;
+    padding-right: 10px;
+}
+.faixa_n_curtida{
+    color: #888;
+}
+#buttons_nav{
+    width: 300px;
+    padding-top: 20%;
+    padding-left: 15px;
+}
+.icons_nav{
+    padding-right: 10px;
+}
+#bg_stromus{
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    color: white;
+    overflow: auto;
+    position: fixed;
+    background-color: rgb(5, 4, 43, .8);
+}
+.titulo_pag{
+    color: white !important;
+    padding-top: 3%;
+    text-shadow: 0px 0px 2px black;
+}
+#lista_faixas_curtidas, #lista_biblioteca_pessoal, #lista_playlists_criadas, #content_faixas_playlist{
+    width: 40%;
+    transition: width 1s;
+    margin-left: 25% !important;
+    margin-bottom: 150px !important;
+}
+#lista_biblioteca_pessoal, #lista_playlists_criadas{
+    width: 70%;
+    position: absolute;
+    padding-bottom: 100px;
+    margin-left: 20% !important;
+}
+#playlists_criadas, #faixas_curtidas, #faixas_playlist, #biblioteca_user{
+    display: none;
+}
+#content_faixas_playlist{
+    width: 45%;
+}
+#faixas_pl{
+    width: 100%;
+}
+.item_album_link{
+    color: white;
+}
+.item_album_curtido{
+    float: left;
+    width: 200px;
+    height: 200px;
+    margin-top: 15px;
+    margin-left: 50px;
+    background-size: 200px 200px;
+    box-shadow: 0px 0px 15px black;
+}
+.nome_item_album_curtido{
+    z-index: 9;
+    padding-top: 60%;
+    padding-left: 15px;
+    text-shadow: 0px 0px 2px black;
+}
+#playlist_name{
+    color: white;
+    padding-left: 20px;
+}
+.add_faixa_playlist{
+    float: left;
+    margin-top: 6px;
+    margin-left: 5px;
+}
+#painel_album{
+    width: 100%;
+    height: 250px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+#img_capa_album{
+    float: left;
+    width: 250px;
+    height: 250px;
+    box-shadow: 0px 0px 15px black;
+}
+#nome_playlist_album{
+    color: white;
+    padding-top: 10%;
+    padding-left: 40%;
+}
+#criador_playlist_album{
+    font-size: 25px;
+    padding-left: 25px;
+    color:rgb(177, 177, 177);
+    text-shadow: 0px 0px 15px black;
+}
+.pl_now_anim{
+    width: 20px;
+    display: none;
+    padding-left: 30px;
+}
+.fa-cog{
+    right: 5%;
+    position: fixed;
+    height: 29px;
+    margin-top: 12px;
+    margin-right: 20px;
+}
+#configuracoes{
+    width: 100%;
+    height: 100%;
+    color: white;
+    padding: 15px;
+    display: none;
+    overflow: hidden;
+    animation: abre_configuracoes .5s;
+}
+#palheta_cores{
+    width: 90%;
+    height: 50%;
+}
+#cores_personalizadas{
+    width: 100%;
+    height: 80%;
+}
+.prancheta_palhetas{
+    width: 90%;
+    padding: 5px;
+    height: 50px;
+    padding-left: 10%;
+    border-radius: 5px;
+    background-color: rgb(43, 43, 43);
+}
+.icon_palheta_cor{
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-left: 10%;
+    border-radius: 25px;
+    box-shadow: inset 0px 0px 4px black;
+}
+#opcoes_fx{
+    left: 35%;
+    z-index: 4;
+    padding: 10px;
+    display: none;
+    font-size: 20px;
+    position: fixed;
+    max-width: 200px;
+    border-radius: 5px;
+    margin-left: -100px;
+    background-color: #141414;
+    transition: all .2s ease-in;
+    -o-transition: all .2s ease-in;
+    -moz-transition: all .2s ease-in;
+    -webkit-transition: all .2s ease-in;
+    
+}
+hr{
+    height: 2px;
+    width: 100%;
+    border: 0px solid;
+    background-color: rgb(34, 34, 34);
+}
+#tipo_playlist{
+    float: left;
+    font-size: 20px;
+    margin-top: 30px;
+    margin-left: 20px;
+}
+#qtd_faixas{
+    float: left;
+    font-size: 20px;
+    margin-top: 30px;
+}
+#play_recomendados{
+    width: 72%;
+    height: 330px;
+    padding: 15px;
+    overflow: hidden;
+    margin-left: 23%;
+    border-radius: 5px;
+    background-color: rgba(27, 27, 27, .7);
+}
+.album_inicio_recomendados{
+    z-index: 5;
+    float: left;
+    padding: 5px;
+    margin: 15px;
+    height: auto;
+    border-radius: 5px;
+    background-color: rgb(34, 34, 34);
+}
+.img_album_recomendado{
+    width: 200px;
+    height: 200px;
+}
+.navbar-expand .navbar-nav{
+    top: 11%;
+    position: absolute;
+    flex-direction: column;
+}
+#lista_artistas, #lista_albuns{
+    margin-top: 5%;
+    margin-left: 15%;
+}
+#items-table{
+    top: 25%;
+    width: 77%;
+    height: 60%;
+    margin-top: 5%;
+    margin-left: -17%;
+    z-index: 50 !important;
+    color: white !important;
+}
+.campo_hidden{
+    opacity: 0;
+    width: 0px;
+    height: 0px;
+    float: left;
+}
+.barra_topo_opcoes{
+    width: 100%;
+    height: 40px;
+}
+.btn_add, .input_pesquisa{
+    top: 3%;
+    right: 28%;
+    position: fixed;
+}
+.input_pesquisa{
+    position: absolute;
+    margin-top: 4px;
+}
+.input_pesquisa_tam{
+    top: 3%;
+    left: 21%;
+    width: 300px;
+    font-size: 20px;
+    position: fixed;
+    padding-left: 20px;
+    border-radius: 50px;
+    padding-bottom: 8px;
+    color: white !important;
+    border: solid 0px white;
+    background-color: rgba(43, 43, 43, .9);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
+}
+#jplayer_pause{
+    display: none;
+}
+.foto_artista, .capa_album_lista{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    filter: drop-shadow(0px 0px 15px rgba(0, 0, 0, .5));
+}
+.capa_album_lista{
+    width: 140px;
+    height: 140px;
+    border-radius: 0px;
+}
+.hidden_header{
+    display: none;
+}
+.item_coluna{
+    float: left !important;
+    background-color: yellow !important;
+}
+.nome_artista, .seguidores_artista{
+    color: white !important;
+}
+.nome_artista{
+    margin-top: 15%;
+    width: 1000px !important;
+}
+.seguidores_artista{
+    float: left;
+    margin-top: 23%;
+    font-size: 20px;
+    margin-left: 30%;
+}

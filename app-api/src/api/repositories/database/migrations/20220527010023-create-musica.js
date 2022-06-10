@@ -26,8 +26,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         references: {
           model: 'artistas',
-          key: 'id',
-          as: 'idArtista',
+          key: 'id'
         }
       },
       idAlbum: {
@@ -36,8 +35,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         references: {
           model: 'albuns',
-          key: 'id',
-          as: 'idAlbum',
+          key: 'id'
         }
       }
     });

@@ -1,5 +1,6 @@
 const MusicaRepository = require("../repositories/MusicaRepository");
 const ArtistaRepository = require("../repositories/ArtistaRepository");
+const AlbumRepository = require("../repositories/AlbumRepository");
 
 module.exports = {
     getAllMusicas: async function (){
@@ -23,12 +24,25 @@ module.exports = {
     },
 
     addNewMusica: async function (musica){
-        const artista = await ArtistaRepository.findByName(musica.artista)
-        if(!artista) return {status: "Artista não encontrado."}
-        musica.idArtista = artista.id
+
+        console.log("Dados da música:", musica);
+
+        // Buscando o artista pelo Nome
+        const artista = await ArtistaRepository.findByName(musica.idArtista)
+        if(!artista) return { status: "Artista não encontrado." }
+        musica.idArtista = artista.id;
+        
+        // Buscando o álbum pelo nome
+        const album = await AlbumRepository.findByName(musica.idAlbum)
+        if(!album) return { status: "Album não encontrado." }
+        musica.idAlbum = album.id;
+
+        console.log("Música pós verificações: ", musica);
+        
         const data = await MusicaRepository.create(musica);
-        if(data) return {status: "Música criado com sucesso."}
-        else return {status: "Não foi possível criar a música"}
+
+        if(data) return { status: "Música criada com sucesso." }
+        else return { status: "Não foi possível criar a música" }
     },
 
     removeMusicaById: async function (idMusica) {

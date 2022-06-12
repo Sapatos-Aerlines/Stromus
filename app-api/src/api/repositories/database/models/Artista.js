@@ -1,6 +1,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Artista extends Model {
     static associate(models) {
@@ -36,5 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'artistas',
     modelName: 'Artista'
   });
+  
   return Artista;
 }

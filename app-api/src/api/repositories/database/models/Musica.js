@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Musica extends Model {
     static associate(models) {
@@ -19,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   Musica.init({
     artista: {
         type: DataTypes.STRING, 
@@ -29,17 +31,18 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
     },
     duracao: {
-        type: DataTypes.TIME,
+        type: DataTypes.STRING,
         defaultValue: "00:00"
     },
     estilo: {
         type: DataTypes.STRING,
-        defaultValue: "0"
+        allowNull: false
     }
   }, {
     sequelize,
     tableName: 'musicas',
     modelName: 'Musica',
   });
+  
   return Musica;
 };

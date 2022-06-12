@@ -8,15 +8,15 @@ module.exports = {
             musicas => {
                 res.set("Content-Type", "application/json");
                 res.send(JSON.stringify(musicas));
-            }            
+            }
         )
     },
 
     // handler para adcionar novo álbum no banco
     add: function (req, res) {
-        const {nome, dataLancamento, artista} = req.body
+        const {nome, dataLancamento, idArtista, capa} = req.body
         AlbumService.addNewAlbum(
-            {nome, dataLancamento, artista}
+            {nome, dataLancamento, idArtista, capa}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
             res.set("Content-Type", "application/json");
@@ -97,20 +97,8 @@ module.exports = {
             });
     },
 
-    // handler para remover um álbum pelo seu nome
-    removeByName: function (req, res) {
-        AlbumService.removeAlbumByName(
-            // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
-            req.params.nome).then((status) => {
-                res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";
-                res.set("Content-Type", "application/json");
-                res.send(JSON.stringify(status));
-            }
-        );
-    },
-
     // handler para remover um álbum pelo seu id
-    removeById: function (req, res) {
+    remove: function (req, res) {
         AlbumService.removeAlbumById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.id).then((status) => {

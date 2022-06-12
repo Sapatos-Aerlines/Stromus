@@ -19,9 +19,8 @@ module.exports = {
         else return {status: "Não foi possível criar o artista"}
     },
     
-
-    removeArtistaByName: async function (nomeArtista) { 
-        const status = await ArtistaRepository.remove(nomeArtista);
+    removeArtistaById: async function (idArtista) {
+        const status = await ArtistaRepository.removeId(idArtista);
         if(status) return {status: "Artista removido com sucesso."}
         else return {status: "Artista não encontrado."}
     }

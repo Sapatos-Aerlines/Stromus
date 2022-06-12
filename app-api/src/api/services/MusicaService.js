@@ -25,20 +25,9 @@ module.exports = {
 
     addNewMusica: async function (musica){
 
-        console.log("Dados da música:", musica);
-
-        // Buscando o artista pelo Nome
-        const artista = await ArtistaRepository.findByName(musica.idArtista)
-        if(!artista) return { status: "Artista não encontrado." }
-        musica.idArtista = artista.id;
+        console.log("Dados de música recebidos:", musica);
         
-        // Buscando o álbum pelo nome
-        const album = await AlbumRepository.findByName(musica.idAlbum)
-        if(!album) return { status: "Album não encontrado." }
-        musica.idAlbum = album.id;
-        
-        console.log("Música pós verificações: ", musica);
-        
+        // Criando a música com os dados fornecidos
         const data = await MusicaRepository.create(musica);
 
         if(data) return { status: "Música criada com sucesso." }

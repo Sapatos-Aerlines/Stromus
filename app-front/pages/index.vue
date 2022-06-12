@@ -453,7 +453,7 @@
         artistaView: false,
         musicaView: false,
         curtidaView: false,
-
+        playListlateral: false,
         time_set_inico: null,
         artistaSearch: "",
         currentPage: 1,

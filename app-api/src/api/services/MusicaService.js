@@ -36,7 +36,7 @@ module.exports = {
         const album = await AlbumRepository.findByName(musica.idAlbum)
         if(!album) return { status: "Album não encontrado." }
         musica.idAlbum = album.id;
-
+        
         console.log("Música pós verificações: ", musica);
         
         const data = await MusicaRepository.create(musica);

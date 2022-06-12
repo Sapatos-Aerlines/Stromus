@@ -71,7 +71,7 @@ module.exports = {
 
     // handler para remover um artista pelo seu id (estamos usando o nome para remover)
     remove: function (req, res) {
-        ArtistaService.removeArtistaByName(
+        ArtistaService.removeArtistaById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.id).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";

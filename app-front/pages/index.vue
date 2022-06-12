@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <script src="https://kit.fontawesome.com/6c1b2d82eb.js" crossorigin="anonymous"></script> -->
+    <script src="https://kit.fontawesome.com/6c1b2d82eb.js" crossorigin="anonymous"></script>
     
     <!-- Navegação -->
     <b-navbar id="painel_infos">
@@ -187,7 +187,7 @@
 
           <label class="mr-sm-2" for="input_artista">Artista:</label>
           <b-form-input
-            v-model="novoAlbum.artista"
+            v-model="novoAlbum.idArtista"
             id="input_artista"
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="Artista"
@@ -222,10 +222,26 @@
 
           <label class="mr-sm-2" for="input_artista">Artista:</label>
           <b-form-input
-            v-model="novaMusica.artista"
+            v-model="novaMusica.idArtista"
             id="input_artista"
             class="mb-2 mr-sm-2 mb-sm-0"
             placeholder="Artista"
+          ></b-form-input>
+
+          <label class="mr-sm-2" for="input_album">Álbum:</label>
+          <b-form-input
+            v-model="novaMusica.idAlbum"
+            id="input_album"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            placeholder="Álbum"
+          ></b-form-input>
+
+          <label class="mr-sm-2" for="input_duracao_musica">Duração:</label>
+          <b-form-input
+            id="input_duracao_musica"
+            v-model="novaMusica.duracao"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            placeholder="Ex: 02:30"
           ></b-form-input>
 
           <label class="mr-sm-2" for="input_tipo">Estilo da música:</label>
@@ -282,7 +298,7 @@
 
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button class='btn_remover' v-on:click="removeSelectedArtista(cellData.item.nome)">Remover</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedArtista(cellData.item.id)">Remover</b-button>
               </template>
 
               <template #cell(seguidores)="cellData">
@@ -316,8 +332,8 @@
                 <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
               </template>
 
-              <template #cell(foto)="cellData">
-                  <img class="capa_album_lista" v-bind:src="cellData.item.foto">
+              <template #cell(capa)="cellData">
+                  <img class="capa_album_lista" v-bind:src="cellData.item.capa">
               </template>
 
               <template #cell(dataLancamento)="cellData">
@@ -326,7 +342,7 @@
 
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button class='btn_remover' v-on:click="removeSelectedAlbum(cellData.item.nome)">Remover</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedAlbum(cellData.item.id)">Remover</b-button>
               </template>
         </b-table>
       </div>
@@ -339,7 +355,7 @@
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="musicaSearch"
+              v-model="artistaSearch"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -355,13 +371,9 @@
                 <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
               </template>
 
-              <template #cell(foto)="cellData">
-                  <img class="capa_album_lista" v-bind:src="cellData.item.foto">
-              </template>
-
               <template #cell(nome)="cellData">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button class='btn_remover' v-on:click="removeSelectedMusica(cellData.item.nome)">Remover</b-button>
+                  <b-button class='btn_remover' v-on:click="removeSelectedMusica(cellData.item.id)">Remover</b-button>
               </template>
         </b-table>
       </div>
@@ -388,8 +400,6 @@
 </template>
 
 <script>
-  import CardArtista from '../components/CardArtista.vue'
-
   export default {
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
@@ -420,7 +430,6 @@
  
       return { artistas, albuns, musicas, totalRows }
     },
-    components: { CardArtista },
     name: 'IndexPage',
     data: function () {
         return {                
@@ -449,14 +458,15 @@
           novoAlbum : {
             capa : null,
             nome : null,
-            artista : null,
-            anoLancamento : null
+            idArtista : null,
+            dataLancamento : null
           },
           novaMusica : {
-            artista : null,
             nome : null,
             estilo : null,
-            duracao : null
+            idAlbum : null,
+            duracao : null,
+            idArtista : null
           }
       };
     },
@@ -491,8 +501,8 @@
         })
       },
 
-      removeSelectedArtista: function (nome) {
-        this.$axios.$delete(`artista/${nome}`).then((response) => {
+      removeSelectedArtista: function (id) {
+        this.$axios.$delete(`artista/${id}`).then((response) => {
           
           this.updateArtista();
         })
@@ -525,8 +535,8 @@
         })
       },
 
-      removeSelectedAlbum: function (nome) {
-        this.$axios.$delete(`album/${nome}`).then((response) => {
+      removeSelectedAlbum: function (id) {
+        this.$axios.$delete(`album/${id}`).then((response) => {
           
           this.updateAlbum();
         })      
@@ -538,7 +548,7 @@
         this.$axios
           .$post("musica", this.novaMusica)
           .then((response) => {
-            console.log('Resposta do servidor obtida');
+            console.log('Resposta do servidor obtida', response);
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.$bvModal.hide('modal-nova-musica');
             this.show = false;
@@ -563,7 +573,7 @@
         this.$axios.$delete(`musica/${nome}`).then((response) => {
           
           this.updateMusica();
-        })      
+        })
       },
     },
 

@@ -14,10 +14,10 @@ class MusicaRepository {
         });
     }
 
-    async findByArtista(nomeArtista) {
+    async findByArtista(idArtista) {
         return await Musica.findAll({
             where: {
-                artista: nomeArtista
+                idArtista: idArtista
             }
         });
     }

@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Albuns', {
@@ -14,7 +15,7 @@ module.exports = {
       dataLancamento: {
         type: Sequelize.DATE
       },
-      artista: {
+      capa: {
         type: Sequelize.STRING
       },
       idArtista: {
@@ -28,6 +29,7 @@ module.exports = {
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Albuns');
   }

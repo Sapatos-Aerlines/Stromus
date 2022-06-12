@@ -24,16 +24,16 @@ class ArtistaRepository{
     }
 
     async all(){
-        console.log("ARTISTA:"+Artista);
+        console.log("Artista:", Artista);
         return await Artista.findAll();
     }
 
-    async remove(nomeArtista){
+    async removeId(idArtista){
         return await Artista.destroy({
             where: {
-                nome: nomeArtista
+                id: idArtista
             }
-        });
+        })
     }
 }
 

@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Musicas', {
@@ -8,14 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      artista: {
-        type: Sequelize.STRING
-      },
       nome: {
         type: Sequelize.STRING
       },
       duracao: {
-        type: Sequelize.TIME
+        type: Sequelize.STRING
       },
       estilo: {
         type: Sequelize.STRING
@@ -40,6 +38,7 @@ module.exports = {
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Musicas');
   }

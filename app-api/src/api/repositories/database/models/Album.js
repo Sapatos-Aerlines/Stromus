@@ -1,6 +1,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Album extends Model {
     static associate(models) {
@@ -18,14 +19,16 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   Album.init({
     nome: DataTypes.STRING,
     dataLancamento: DataTypes.DATE,
-    artista: DataTypes.STRING
+    capa: DataTypes.STRING
   }, {
     sequelize: sequelize,
     tableName: 'albuns',
     modelName: 'Album',
   });
+  
   return Album;
 }

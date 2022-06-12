@@ -28,15 +28,11 @@ module.exports = {
 
     addNewAlbum: async function (album){
 
-        console.log("Dados do album:", album);
-
-        // Buscando o ID do artista mencionado
-        const artista = await ArtistaRepository.findByName(album.idArtista)
-        if(!artista) return {status: "Artista não encontrado."}
-        album.idArtista = artista.id
+        console.log("Dados de álbum recebidos:", album);
         
-        console.log("Albúm pós verificação:", album);
+        if(!album.idArtista) return console.log("Artista não especificado, cancelando")
 
+        // Criando o álbum com os dados fornecidos
         const data = await AlbumRepository.create(album);
         if(data) return { status: "Álbum criado com sucesso." }
         else return { status: "Não foi possível criar o álbum" }

@@ -17,6 +17,7 @@
               albumView = false
               musicaView = false
               curtidaView = false
+              playListlateral = false
             ">
             <h2><em class="icons_nav fas fa-chess-queen"></em>Inicio</h2>
           </b-nav-item>
@@ -72,7 +73,7 @@
     </div>
   </b-navbar>
 
-  <div id="playlist">
+  <div id="playlist" v-if="playListlateral">
     <div id="configuracoes">
       <h1>Configurações</h1>
 
@@ -177,21 +178,13 @@
             placeholder="Ex: The Singles: 86-98"
           ></b-form-input>
 
-          <label class="mr-sm-2" for="input_ano_lancamento">Ano de lançamento:</label>
-          <b-form-input
-            id="input_ano_lancamento"
-            v-model="novoAlbum.anoLancamento"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Ex: 2022"
-          ></b-form-input>
+          <label class="mr-sm-2" for="input_ano_lancamento">Data de lançamento:</label>
+          <b-form-datepicker id="input_ano_lancamento" v-model="novoAlbum.dataLancamento" class="mb-2"></b-form-datepicker>
 
           <label class="mr-sm-2" for="input_artista">Artista:</label>
-          <b-form-input
-            v-model="novoAlbum.idArtista"
-            id="input_artista"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Artista"
-          ></b-form-input>
+          <b-form-select v-model="novoAlbum.idArtista">
+            <option id="input_artista" v-for="artista in artistas" :value="artista.id" required>{{artista.nome}}</option>
+          </b-form-select>
 
           <label class="mr-sm-2" for="input_url_capa">URL da capa:</label>
           <b-form-input
@@ -221,20 +214,14 @@
           ></b-form-input>
 
           <label class="mr-sm-2" for="input_artista">Artista:</label>
-          <b-form-input
-            v-model="novaMusica.idArtista"
-            id="input_artista"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Artista"
-          ></b-form-input>
+          <b-form-select v-model="novaMusica.idArtista">
+            <option id="input_artista" v-for="artista in artistas" @change="lista_albuns_artista(novaMusica.idArtista)" :value="artista.id">{{artista.nome}}</option>
+          </b-form-select>
 
           <label class="mr-sm-2" for="input_album">Álbum:</label>
-          <b-form-input
-            v-model="novaMusica.idAlbum"
-            id="input_album"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Álbum"
-          ></b-form-input>
+          <b-form-select v-model="novaMusica.idAlbum">
+            <option v-for="album in albuns" :value="album.id">{{album.nome}}</option>
+          </b-form-select>
 
           <label class="mr-sm-2" for="input_duracao_musica">Duração:</label>
           <b-form-input
@@ -245,12 +232,13 @@
           ></b-form-input>
 
           <label class="mr-sm-2" for="input_tipo">Estilo da música:</label>
-          <b-form-input
-            v-model="novaMusica.estilo"
+          <b-form-select
             id="input_tipo"
-            class="mb-2 mr-sm-2 mb-sm-0"
-            placeholder="Estilo"
-          ></b-form-input>
+            v-bind:options="estilos_musica"
+            v-model="novaMusica.estilo"
+            v-bind:value="null"
+          >
+          </b-form-select>
           
           <br>
           <b-button type="submit" variant="primary" @click="show = !show">Registrar</b-button>
@@ -262,30 +250,47 @@
     <div id="bg_stromus">
       <div class="invent-cards" v-if="inicioView">        
           <div id="pagina_inicial">
-            <h1 class="titulo_pag" id="time_set">Álbuns recomendados</h1>
+            <h1 class="titulo_pag" id="time_set">{{time_set_inicio}}</h1>
             <div id="play_recomendados">
-              <b-table id="items-table" class="album_inicio_recomendados" borderless thead-class="d-none" fixed     
-                :items="items" :fields="fields"
-                :per-page="perPage" 
-                :current-page="currentPage"
-                v-bind:items="filterSearchAlbum">
+              <h2>Álbuns recomendados</h2>
+              <div v-for="(album, index) in albuns"  :key="album.id" v-if="albuns && albuns.length > 0 && index <= 2">
+                <a href="#" class="album_inicio_recomendados">
+                  <img class="img_album_recomendado" :src="album.capa" />
+                  <h3>{{album.nome.length > 12 ? album.nome.slice(0, 12) +"..." : album.nome}}</h3>
+                  <span>{{album.idArtista}}</span>
+                </a>
+              </div>
+            </div>
 
-                <template #cell(capa)="cellData">
-                    <img class="capa_album_lista" v-bind:src="cellData.item.capa">
-                </template>
+            <div id="play_recomendados">
+              <h2>Artistas recomendados</h2>
+              <div v-for="(artista, index) in artistas" :key="artista.id" v-if="artistas && artistas.length > 0 && index <= 2">
+                <a href="#" class="artista_inicio_recomendados">
+                  <img class="img_artista_recomendado" :src="artista.foto" />
+                  <h3>{{artista.nome.length > 12 ? artista.nome.slice(0, 12) +"..." : artista.nome}}</h3>
+                  <span>Artista</span>
+                </a>
+              </div>
+            </div>
 
-                <template #cell(dataLancamento)="cellData">
-                  <h3>{{cellData.item.dataLancamento}}</h3>
-                </template>
+            <div id="musicas_recomendadas">
+              <h2>Músicas recomendadas</h2>
+              <div v-for="(musica, index) in musicas" :key="musica.id" v-if="musicas && musicas.length > 0 && index <= 2">
+                <a href="#" class="musica_inicio_recomendados">
+                  
+                  <hr>
+                  <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
-                <template #cell(nome)="cellData">
-                    <h5>{{cellData.item.nome}}</h5>
-                </template>
+                  <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+                  
+                  <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
-                <template #cell(idArtista)="cellData">
-                  <span>{{cellData.item.idArtista}}</span>
-                </template>
-              </b-table>
+                  <span class="nome_artista_musica_list">{{busca_nome_artista(musica.idArtista)}}</span>
+                  <span class="nome_album_musica_list">{{busca_nome_album(musica.idAlbum)}}</span>
+
+                  <span class="tempo_musica_list">{{musica.duracao}}</span>
+                </a>
+              </div>
             </div>
         </div>
       </div>
@@ -341,25 +346,19 @@
             ></b-form-input>
           </b-nav-form>
         </div>
+        
+        <div id="lista_biblioteca_pessoal">
+          <div v-for="album in albuns">
 
-        <b-table id="items-table" borderless thead-class="d-none" fixed
-                :per-page="perPage" 
-                :current-page="currentPage" 
-                v-bind:items="filterSearchAlbum">
-              
-              <template #cell(capa)="cellData">
-                  <img class="capa_album_lista" v-bind:src="cellData.item.capa">
-              </template>
+            <a href="#" class="item_album_link">
+              <img class="capa_album_lista" :src="album.capa" />
+              <h3 class="nome_item_album_curtido">{{album.nome.length > 20 ? album.nome.slice(0, 20) +"..." : album.nome}}</h3>
 
-              <template #cell(dataLancamento)="cellData">
-                <h3>{{cellData.item.dataLancamento}}</h3>
-              </template>
-
-              <template #cell(nome)="cellData">
-                  <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
-                  <b-button class='btn_remover' v-on:click="removeSelectedAlbum(cellData.item.id)">Remover</b-button>
-              </template>
-        </b-table>
+              <!-- Local Temporário -->
+              <b-button class='btn_remover' v-on:click="removeSelectedAlbum(album.id)">Remover</b-button>
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- Tabela de músicas -->
@@ -414,7 +413,7 @@
   export default {
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
-      let artistas, albuns, musicas, totalRows;
+      let artistas, albuns, musicas, totalRows, time_set_inicio;
 
       try {
         const response = await $axios.$get('artista');
@@ -423,7 +422,7 @@
         totalRows = artistas.length;
       } catch (ex) {
         console.log(ex);
-      } 
+      }
 
       try {
         const response = await $axios.$get('album');
@@ -438,51 +437,103 @@
       } catch (ex) {
         console.log(ex);
       }
- 
-      return { artistas, albuns, musicas, totalRows }
+
+      let horario = new Date();
+      time_set_inicio = horario.getHours() >= 12 && horario.getHours() < 18 ? "Boa tarde" : horario.getHours() >= 18 || horario.getHours() < 6 ? "Boa noite" : "Bom dia"
+
+      return { artistas, albuns, musicas, totalRows, time_set_inicio }
     },
+
     name: 'IndexPage',
     data: function () {
-        return {                
-          show: false,
-          inicioView: true,
-          albumView: false,
-          artistaView: false,
-          musicaView: false,
-          curtidaView: false,
+      return {
+        show: false,
+        inicioView: true,
+        albumView: false,
+        artistaView: false,
+        musicaView: false,
+        curtidaView: false,
 
-          artistaSearch: "",
-          currentPage: 1,
-          totalRows: 0,
-          perPage: 50,
-          url: '',
-          
-          artistas: [],
-          albuns: [],
-          musicas: [],
+        time_set_inico: null,
+        artistaSearch: "",
+        currentPage: 1,
+        totalRows: 0,
+        perPage: 50,
+        url: '',
+        
+        artistas: [],
+        albuns: [],
+        musicas: [],
 
-          novoArtista: {
-            foto: null,
-            nome: null,
-            seguidores: null
-          },
-          novoAlbum : {
-            capa : null,
-            nome : null,
-            idArtista : null,
-            dataLancamento : null
-          },
-          novaMusica : {
-            nome : null,
-            estilo : null,
-            idAlbum : null,
-            duracao : null,
-            idArtista : null
-          }
+        estilos_musica: [
+          {text: "Escolha um:", value:null},
+          "Pop",
+          "Rock",
+          "Eletrônica",
+          "Blue",
+          "Country",
+          "Sertanejo",
+          "Bossa nova"
+        ],
+
+        albuns_dinamic: [],
+        limit: 3,
+
+        novoArtista: {
+          foto: null,
+          nome: null,
+          seguidores: null
+        },
+        novoAlbum : {
+          capa : null,
+          nome : null,
+          idArtista : null,
+          dataLancamento : null
+        },
+        novaMusica : {
+          nome : null,
+          estilo : null,
+          idAlbum : null,
+          duracao : null,
+          idArtista : null
+        }
       };
     },
 
     methods: {
+
+      busca_nome_artista: function(id_artista){
+        
+        if(!id_artista) return 'Artista desconhecido';
+        
+        try{
+          for(let i = 0; i < artistas.length; i++){
+
+            if(artista[i].id == id_artista)
+              return artista[i].nome;
+          }
+        }catch(err){
+          return console.log("Não há artistas registrados");
+        }
+      },
+
+      busca_nome_album: function(id_album){
+        
+        if(!id_album) return 'Álbum desconhecido';
+        
+        try{
+          for(let i = 0; i < albuns.length; i++){
+
+            if(album[i].id == id_album)
+              return album[i].nome;
+          }
+        }catch(err){
+          return console.log("Não há álbuns registrados");
+        }
+      },
+
+
+      
       createNewArtista: function (event) {
         event.preventDefault();
 
@@ -505,7 +556,6 @@
       },
 
       updateArtista: function () {
-
         this.$axios.$get("artista").then((response) => {
           this.artistas = response;
           this.totalRows = this.artistas.length
@@ -640,7 +690,7 @@
 <style scoped>
   @import '../static/style.css';
   @import '../static/responsividade.css';
-
+  @import '../static/animations.css';
     .invent-table {
         padding: 0 100px;
         margin: 0 auto;

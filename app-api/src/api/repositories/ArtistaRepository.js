@@ -24,7 +24,6 @@ class ArtistaRepository{
     }
 
     async all(){
-        console.log("Artista:", Artista);
         return await Artista.findAll();
     }
 

@@ -7,19 +7,13 @@ module.exports = {
         id: 1,
         nome: 'Melhores Skid row',
         dataLancamento: "2022-04-23",
-        artista: "Skid row",
-        idArtista: 2,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        idArtista: 2
      },
      {
       id: 2,
       nome: 'Skid row remix',
       dataLancamento: "2016-10-15",
-      artista: "Skid row",
-      idArtista: 2,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      idArtista: 2
    },
    ], {});
   },

@@ -297,6 +297,7 @@ a:hover{
 .titulo_pag{
     color: white !important;
     padding-top: 3%;
+    margin-left: 15%;
     text-shadow: 0px 0px 2px black;
 }
 #lista_faixas_curtidas, #lista_biblioteca_pessoal, #lista_playlists_criadas, #content_faixas_playlist{
@@ -454,7 +455,7 @@ hr{
     height: 330px;
     padding: 15px;
     overflow: hidden;
-    margin-left: 23%;
+    margin-left: 15%;
     border-radius: 5px;
     background-color: rgba(27, 27, 27, .7);
 }
@@ -465,6 +466,7 @@ hr{
     margin: 15px;
     height: auto;
     border-radius: 5px;
+    margin-left: 5% !important;
     background-color: rgb(34, 34, 34);
 }
 .img_album_recomendado{
@@ -561,4 +563,10 @@ hr{
     margin-top: 23%;
     font-size: 20px;
     margin-left: 30%;
+}
+.albuns_recomendados{
+    float: left;
+}
+.nome_album_recomendado{
+    font-size: 20px;
 }

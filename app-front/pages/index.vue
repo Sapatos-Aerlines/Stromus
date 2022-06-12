@@ -262,8 +262,31 @@
     <div id="bg_stromus">
       <div class="invent-cards" v-if="inicioView">        
           <div id="pagina_inicial">
-            <h1 class="titulo_pag" id="time_set"></h1>
-            <div id="play_recomendados"></div>
+            <h1 class="titulo_pag" id="time_set">Álbuns recomendados</h1>
+            <div id="play_recomendados">
+              <b-table id="items-table" class="album_inicio_recomendados" borderless thead-class="d-none" fixed     
+                :items="items" :fields="fields"
+                :per-page="perPage" 
+                :current-page="currentPage"
+                v-bind:items="filterSearchAlbum">
+
+                <template #cell(capa)="cellData">
+                    <img class="capa_album_lista" v-bind:src="cellData.item.capa">
+                </template>
+
+                <template #cell(dataLancamento)="cellData">
+                  <h3>{{cellData.item.dataLancamento}}</h3>
+                </template>
+
+                <template #cell(nome)="cellData">
+                    <h5>{{cellData.item.nome}}</h5>
+                </template>
+
+                <template #cell(idArtista)="cellData">
+                  <span>{{cellData.item.idArtista}}</span>
+                </template>
+              </b-table>
+            </div>
         </div>
       </div>
 
@@ -271,7 +294,7 @@
       <div class="invent-table" v-if="artistaView" id="lista_artistas">
 
         <div class="barra_topo_opcoes">
-          <b-button v-b-modal.modal-novo-artista variant="dark" class="btn_add">Adicionar um artista</b-button>
+          <b-button v-b-modal.modal-novo-artista @click="show = !show" variant="dark" class="btn_add">Adicionar um artista</b-button>
 
           <b-nav-form class="input_pesquisa">
             <b-form-input
@@ -287,10 +310,6 @@
                 :per-page="perPage" 
                 :current-page="currentPage" 
                 v-bind:items="filterSearchArtista">
-              
-              <template #cell(id)="cellData">
-                <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
-              </template>
 
               <template #cell(foto)="cellData">
                   <img class="foto_artista" v-bind:src="cellData.item.foto">
@@ -311,7 +330,7 @@
       <div class="invent-table" v-if="albumView" id="lista_albuns">
 
         <div class="barra_topo_opcoes">
-          <b-button v-b-modal.modal-novo-album variant="dark" class="btn_add">Adicionar um álbum</b-button>
+          <b-button v-b-modal.modal-novo-album @click="show = !show" variant="dark" class="btn_add">Adicionar um álbum</b-button>
 
           <b-nav-form class="input_pesquisa">
             <b-form-input
@@ -328,10 +347,6 @@
                 :current-page="currentPage" 
                 v-bind:items="filterSearchAlbum">
               
-              <template #cell(id)="cellData">
-                <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
-              </template>
-
               <template #cell(capa)="cellData">
                   <img class="capa_album_lista" v-bind:src="cellData.item.capa">
               </template>
@@ -350,7 +365,7 @@
       <!-- Tabela de músicas -->
       <div class="invent-table" v-if="musicaView" id="lista_albuns">
         <div class="barra_topo_opcoes">
-          <b-button v-b-modal.modal-nova-musica variant="dark" class="btn_add">Adicionar uma música</b-button>
+          <b-button v-b-modal.modal-nova-musica @click="show = !show" variant="dark" class="btn_add">Adicionar uma música</b-button>
 
           <b-nav-form class="input_pesquisa">
             <b-form-input
@@ -367,12 +382,8 @@
                 :current-page="currentPage" 
                 v-bind:items="filterSearchMusica">
               
-              <template #cell(id)="cellData">
-                <h1 class='campo_hidden'>{{cellData.item.id}}</h1>
-              </template>
-
               <template #cell(nome)="cellData">
-                  <h1 class='nome_artista'>{{cellData.item.nome}}</h1>
+                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
                   <b-button class='btn_remover' v-on:click="removeSelectedMusica(cellData.item.id)">Remover</b-button>
               </template>
         </b-table>
@@ -564,13 +575,13 @@
 
       updateMusica: function () {
         this.$axios.$get("musica").then((response) => {
-          this.albuns = response;
+          this.musicas = response;
           this.totalRows = this.musicas.length;
         })
       },
 
-      removeSelectedMusic: function (nome) {
-        this.$axios.$delete(`musica/${nome}`).then((response) => {
+      removeSelectedMusica: function (id) {
+        this.$axios.$delete(`musica/${id}`).then((response) => {
           
           this.updateMusica();
         })

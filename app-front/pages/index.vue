@@ -1,6 +1,6 @@
 <template>
   <div>
-    <script src="https://kit.fontawesome.com/6c1b2d82eb.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://kit.fontawesome.com/6c1b2d82eb.js" crossorigin="anonymous"></script> -->
     
     <!-- Navegação -->
     <b-navbar id="painel_infos">

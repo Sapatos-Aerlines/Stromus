@@ -9,7 +9,9 @@ module.exports = {
             if (userLogin) {
                 console.log(userLogin);
                 const authenticated = await utils.comparePwd(req.body.pwd, userLogin.pwd);
+                console.log("AUTENTICADO AQUI");
                 if (authenticated) {
+                    console.log("AUTENTICADO AQUI");
                     const token = utils.signJwt(userLogin._id);
                     res.set('Authorization', `Bearer ${token}`);
                     res.status(200).send(userLogin);

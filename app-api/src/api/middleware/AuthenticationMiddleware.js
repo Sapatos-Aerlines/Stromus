@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     verifyJWT(req, res, next){
         // "Authorization": "Bearer xxx.yyy.zzz"
-        const bearerHeader = req.headers['Aathorization'];
+        const bearerHeader = req.headers['Authorization'];
+        console.log("AQUI: "+JSON.stringify(req.headers));
         const token = bearerHeader.replace('Bearer ',''); 
     
         if (!token) return res.status(401).send({ auth: false, message: 'Nenhum token fornecido.'});

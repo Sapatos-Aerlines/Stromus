@@ -6,7 +6,7 @@ module.exports = {
         // Alguns usam o atributo Authorization no formato abaixo
         // "Authorization": "Bearer xxx.yyy.zzz"
         const bearerHeader = req.headers['Authorization'];
-        const token = bearerHeader.replace('Bearer ',''); 
+        const token = bearerHeader.replace('Bearer ','');
         // Alguns usam o atributo x-access-token no formato abaixo
         // var token = req.headers['x-access-token'];
     

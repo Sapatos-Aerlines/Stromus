@@ -58,7 +58,7 @@ export default {
             // Apenas para testes
             // if (!this.user.username) {
             //     this.user = {
-            //         username: "testemetro",
+            //         username: "testometro",
             //         email: "teste@teste"
             //         pwd: "1234",
             //     }

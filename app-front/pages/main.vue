@@ -727,7 +727,6 @@
           return console.log("Não há artistas registrados para pesquisar");
         }
       },
-
       filterSearchAlbum: function () {
         try{
           if(this.albuns.length > 0){
@@ -743,7 +742,6 @@
           return console.log("Não há álbuns registrados para pesquisar");
         }
       },
-
       filterSearchMusica: function () {
         try{
           if (this.artistaSearch.length > 0) {

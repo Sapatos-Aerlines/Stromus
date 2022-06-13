@@ -1,32 +1,31 @@
 const AlbumRepository = require("../repositories/AlbumRepository");
-const ArtistaRepository = require("../repositories/ArtistaRepository");
 
 module.exports = {
-    getAllAlbuns: async function (){
+    getAll: async function (){
         return AlbumRepository.all();
     },
 
-    getAlbumById: async function (idAlbum) {
+    getById: async function (idAlbum) {
         return AlbumRepository.findById(idAlbum);
     },
 
-    getAlbumByNome: async function (nome) {
+    getByNome: async function (nome) {
         return AlbumRepository.findByName(nome);
     },
 
-    getAlbumByArtista: async function (nomeArtista){
+    getByArtista: async function (nomeArtista){
         return AlbumRepository.findByArtista(nomeArtista)
     },
 
-    getAlbumByEstilo: async function (estilo){
+    getByEstilo: async function (estilo){
         return AlbumRepository.findByEstilo(estilo)
     },
 
-    getAlbumByAno: async function (ano) {
+    getByAno: async function (ano) {
         return AlbumRepository.findByAnoLancamento(ano)
      },
 
-    addNewAlbum: async function (album){
+    addNew: async function (album){
 
         console.log("Dados de álbum recebidos:", album);
         
@@ -38,7 +37,7 @@ module.exports = {
         else return { status: "Não foi possível criar o álbum" }
     },
 
-    removeAlbumById: async function (idAlbum) {
+    removeById: async function (idAlbum) {
         const status = await AlbumRepository.removeById(idAlbum);
         if(status) return {status: "Álbum removido com sucesso."}
         else return {status: "Álbum não encontrado."}

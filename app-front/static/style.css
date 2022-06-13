@@ -371,8 +371,8 @@ a:hover{
 }
 #nome_playlist_album{
     color: white;
-    padding-top: 10%;
-    padding-left: 40%;
+    padding-top: 8%;
+    padding-left: 28.5%;
 }
 #criador_playlist_album{
     font-size: 25px;
@@ -462,7 +462,7 @@ hr{
 #pagina_inicial{
     margin-bottom: 120px;
 }
-#play_recomendados, #musicas_recomendadas{
+#play_recomendados, #musicas_recomendadas, #play_sem_dados{
     width: 72%;
     padding: 15px;
     overflow: hidden;
@@ -472,7 +472,7 @@ hr{
     margin-bottom: 25px;
     background-color: rgba(27, 27, 27, .7);
 }
-#musicas_recomendadas{
+#musicas_recomendadas, #play_sem_dados{
     min-height: 50px;
 }
 .album_inicio_recomendados, .artista_inicio_recomendados{
@@ -617,4 +617,14 @@ hr{
 }
 .nome_album_recomendado{
     font-size: 20px;
+}
+
+/* Configs do index.vue */
+.invent-cards {
+    padding: 0px 100px;
+    margin: 20px auto;
+}
+.invent-table {
+    padding: 0 100px;
+    margin: 0 auto;
 }

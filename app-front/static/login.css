@@ -1,0 +1,20 @@
+img {
+    /* margin-top: 50px; */
+    margin: 50px auto 0 auto;
+    display: block;
+    width: 40%;
+}
+
+.login {
+    font-size: 1.5rem;
+    width: 500px;
+    margin: 20px auto 0px auto;
+    padding: 50px 50px 20px 50px;
+    border-radius: 20px;
+    background-color: #cdeefb;
+}
+
+.login button {
+    background-color: rgb(98, 202, 202);
+    border-color: gray;
+}

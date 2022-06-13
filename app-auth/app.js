@@ -6,7 +6,7 @@ const UserRoutes = require("./src/routes/UserRoutes")
 const app = express();
 
 //Configuração dos middlewares
-app.use(cors());
+app.use(cors({credentials: true, origin: true}));
 app.use(bodyParser.json()); // Converterá qualquer corpo em JSON em um objeto javascript
 
 app.use(UserRoutes);

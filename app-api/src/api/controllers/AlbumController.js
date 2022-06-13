@@ -4,7 +4,7 @@ module.exports = {
 
     listAll: function (req, res) {
         res.statusCode = 200; // Status HTTP para OK;
-        AlbumService.getAllAlbuns().then(
+        AlbumService.getAll().then(
             musicas => {
                 res.set("Content-Type", "application/json");
                 res.send(JSON.stringify(musicas));
@@ -15,7 +15,7 @@ module.exports = {
     // handler para adcionar novo álbum no banco
     add: function (req, res) {
         const {nome, dataLancamento, idArtista, capa} = req.body
-        AlbumService.addNewAlbum(
+        AlbumService.addNew(
             {nome, dataLancamento, idArtista, capa}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
@@ -50,7 +50,7 @@ module.exports = {
     // handler para recuperar um álbum por nome
     getByName: function (req, res) {
         const nome = req.params.nome;
-        AlbumService.getAlbumByNome(
+        AlbumService.getByNome(
             nome).then((album) => {
                 if(album){
                     res.statusCode = 200; // Status HTTP para OK;
@@ -66,7 +66,7 @@ module.exports = {
 
     getByAno: function (req, res) {
         const ano = req.params.ano;
-        AlbumService.getAlbumByAno(ano).then(
+        AlbumService.getByAno(ano).then(
             (album) => {
                 if(album){
                     res.statusCode = 200; // Status HTTP para OK;
@@ -83,7 +83,7 @@ module.exports = {
     // handler para recuperar um álbum por artista
     getByArtista: function (req, res) {
         const nomeArtista = req.params.nomeArtista;
-        AlbumService.getAlbumByArtista(
+        AlbumService.getByArtista(
             nomeArtista).then((album) => {
                 if(album){
                     res.statusCode = 200; // Status HTTP para OK;
@@ -99,7 +99,7 @@ module.exports = {
 
     // handler para remover um álbum pelo seu id
     remove: function (req, res) {
-        AlbumService.removeAlbumById(
+        AlbumService.removeById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.id).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";

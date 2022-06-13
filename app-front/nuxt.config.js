@@ -1,9 +1,9 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'app-front',
+    title: 'tromus',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'pt',
     },
     meta: [
       { charset: 'utf-8' },
@@ -38,7 +38,7 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     // baseURL: 'http://127.0.0.1:4010/', // configuração para o mock
-    baseURL: 'http://localhost:8080/', // configuração para comunicação com a API do Node
+    baseURL: 'http://localhost:8085/', // configuração para comunicação com a API do Node
     //prefix: 'http://localhost:8080/',
     // proxy: true,
     credentials: true //força o axios a armazenar o Token no seu cache

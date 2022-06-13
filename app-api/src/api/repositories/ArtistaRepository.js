@@ -3,7 +3,6 @@ const { Artista } = require("./database/models/index")
 class ArtistaRepository{
 
     async create(artista){
-        console.log(Artista);
         return await Artista.create(artista);
     }
 

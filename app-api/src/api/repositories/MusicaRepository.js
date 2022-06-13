@@ -22,6 +22,14 @@ class MusicaRepository {
         });
     }
 
+    async findByAlbum(idAlbum) {
+        return await Musica.findAll({
+            where: {
+                idAlbum: idAlbum
+            }
+        });
+    }
+
     async findByEstilo(_estilo) {
         return await Musica.findAll({
             where: {

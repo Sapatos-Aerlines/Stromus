@@ -7,7 +7,7 @@ module.exports = {
         //return ItemPatrimonioRepository.all()
         // console.log(ItemPatrimonioRepository.all());
         res.statusCode = 200; // Status HTTP para OK;
-        MusicaService.getAllMusicas().then(
+        MusicaService.getAll().then(
             musicas => {
                 res.set("Content-Type", "application/json");
                 res.send(JSON.stringify(musicas));
@@ -19,9 +19,7 @@ module.exports = {
     add: function (req, res) {
         const {idArtista, idAlbum, nome, duracao, estilo} = req.body
         
-        console.log(idArtista, idAlbum, nome, duracao, estilo);
-
-        MusicaService.addNewMusica(
+        MusicaService.addNew(
             {idArtista, idAlbum, nome, duracao, estilo}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
@@ -56,7 +54,7 @@ module.exports = {
     // handler para recuperar uma música por nome
     getByName: function (req, res) {
         const nome = req.params.nome;
-        MusicaService.getMusicaByNome(
+        MusicaService.getByNome(
             nome).then((musica) => {
                 if(musica){
                     res.statusCode = 200; // Status HTTP para OK;
@@ -73,7 +71,7 @@ module.exports = {
     // handler para recuperar uma música por musica
     getByArtista: function (req, res) {
         const nomeArtista = req.params.nomeArtista;
-        MusicaService.getMusicaByArtista(
+        MusicaService.getByArtista(
             nomeArtista).then((musica) => {
                 if(musica){
                     res.statusCode = 200; // Status HTTP para OK;
@@ -87,9 +85,25 @@ module.exports = {
             });
     },
     
+    getByAlbum: function (req, res) {
+        const idAlbum = req.params.idAlbum;
+        MusicaService.getByAlbum(
+            idAlbum).then((musica) => {
+                if(musica){
+                    res.statusCode = 200; // Status HTTP para OK;
+                    res.set("Content-Type", "application/json");
+                    res.send(JSON.stringify(musica));                    
+                } else{
+                    res.statusCode = 404; // Status HTTP para No Found;
+                    res.set("Content-Type", "application/json");
+                    res.send({status: `Não foi possível encontrar a música para o álbum de ID: ${idAlbum}.`});
+                }                
+            });
+    },
+
     // handler para remover uma música pelo seu id
     remove: function (req, res) {
-        MusicaService.removeMusicaById(
+        MusicaService.removeById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router
             req.params.id).then((status) => {
                 res.statusCode = 200; // Status HTTP para Operação bem sucedida "No content";

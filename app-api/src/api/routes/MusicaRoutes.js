@@ -19,7 +19,6 @@ routes.get("/musica/:id", MusicaController.getById);
 routes.get("/musica/:nome", MusicaController.getByName);
 routes.get("/musica/:idAlbum", MusicaController.getByAlbum);
 routes.get("/musica/:nomeArtista", MusicaController.getByArtista);
-
 routes.delete("/musica/:id", MusicaController.remove);
 
 module.exports = routes;

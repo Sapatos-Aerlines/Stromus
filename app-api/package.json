@@ -21,7 +21,9 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.20.1",
     "sqlite3": "^5.0.8",
-    "vue": "^3.2.36"
+    "vue": "^3.2.36",
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "jest": "^28.1.0",

@@ -18,7 +18,7 @@ module.exports = {
       }
 
       dbConnection = db.db("almoxarifado_users");
-      console.log("Successfully connected to MongoDB.");
+      console.log("Conectado com sucesso ao MongoDB.");
 
       return callback();
     });

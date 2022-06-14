@@ -1,14 +1,9 @@
 const ArtistaService = require("../services/ArtistaService");
 
 module.exports = {
-    /* Perceba que o objeto response, do sequelize, 
-       é recebido aqui. Importante para responder a 
-       requisição de forma assíncrona. 
-    */
+
+    // handler para listar todos os artistas
     listAll: function (req, res) {
-        //Blocking operation (Não fazer)
-        //return ItemPatrimonioRepository.all()
-        // console.log(ItemPatrimonioRepository.all());
         res.statusCode = 200; // Status HTTP para OK;
         ArtistaService.getAll().then(
             artistas => {

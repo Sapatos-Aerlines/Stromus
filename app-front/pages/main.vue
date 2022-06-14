@@ -336,7 +336,12 @@
 
             <span id="qtd_faixas">{{album_music.length > 1 ? album_music.length +"faixas" : album_music.length > 0 ? "1 faixa" : "Nenhuma faixa"}}</span>
             <h1 id="nome_playlist_album">{{album.nome}}</h1>
-            <span id="criador_playlist_album">{{busca_nome_artista(album.idArtista)}}</span>
+            
+            <a href="#" @click="painel_album = false
+                              painel_artista = true
+                              define_artista_alvo(album.idArtista)
+                              busca_informacoes_artista(busca_nome_artista(album.idArtista))">
+              <span id="criador_playlist_album">{{busca_nome_artista(album.idArtista)}}</span></a>
           </div>
           <br>
 
@@ -357,7 +362,7 @@
       </div>
 
       <!-- Painel do artista com músicas e álbuns -->
-      <div class="invent-table" v-if="painel_artista" id="lista_artistas">
+      <div class="invent-table" v-if="painel_artista" id="painel_artista">
         <div v-for="artista in artista_alvo" :key="artista.id">
           <div id="painel_album">
             <img id="img_foto_artista" :src="artista.foto" />
@@ -369,7 +374,7 @@
           </div>
           <br>
 
-          <div id="faixas_populares_artista_perfil">
+          <div id="faixas_populares_artista_perfil" v-if="artista_music.length > 0">
             <h2>Músicas populares</h2>
 
             <div class="item_playlist" v-for="(musica, index) in artista_music" :key="musica.id" v-if="artista_music && artista_music.length > 0 && index <= 3">
@@ -385,11 +390,19 @@
             </div>
           </div>
 
-          <div id="playlist_recomendados">
-              <h1>Discografia</h1>
+          <div id="discografia_artista_perfil" v-if="artista_album.length > 0">
+              <h2>Discografia</h2>
 
-
-
+              <div class="item_playlist_artista_perfil" v-for="(album, index) in artista_album" :key="album.id" v-if="artista_album && artista_album.length > 0 && index <= 3">
+                <a href="#" class="album_artista_perfil" @click="
+                painel_artista = false
+                painel_album = true
+                define_album_alvo(album.id)
+                ">
+                  <img class="img_album_recomendado" :src="album.capa" />
+                  <h3>{{album.nome.length > 12 ? album.nome.slice(0, 12) +"..." : album.nome}}</h3>
+                </a>
+              </div>
           </div>
         </div>
       </div>
@@ -523,16 +536,18 @@
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
 
-    const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
+      const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
-    // Check if user is logged in.
+      // Check if user is logged in.
       if (authToken === null) {
           // This means that there ISN'T JWT and no user is logged in.
           $axios.defaults.headers.common.Authorization = null;
+          this.$router.push("/");
       } else {
           // This means that there IS a JWT so someone must be logged in.
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
       }
+    
       let artistas, albuns, musicas, totalRows, time_set_inicio;
 
       try {
@@ -607,6 +622,7 @@
 
         artista_alvo: [],
         artista_music: [],
+        artista_album: [],
         descricao_artista: null,
 
         novoArtista: {
@@ -685,11 +701,19 @@
         this.$axios.$get(`musica/${id_artista}`).then((response) => {
           this.artista_music = response;
         })
+
+        // Filtrando os álbuns do artista
+        this.artista_album = this.albuns.filter((album) => 
+              album.idArtista == id_artista
+            )
       },
 
       // Função para buscar os dados do artista
       busca_informacoes_artista: function(nome_artista) {
         
+        this.descricao_artista = "Sem descrição disponível no momento";
+        return;
+
         const url = `https://api.duckduckgo.com/?q=${nome_artista}&format=json&pretty=0&skip_disambig=1&no_html=1`;
 
         fetch(url)
@@ -708,7 +732,6 @@
         this.$axios
           .$post("artista", this.novoArtista)
           .then((response) => {
-            console.log('Resposta do servidor obtida');
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.$bvModal.hide('modal-novo-artista');
             this.show_prancheta = false;
@@ -717,6 +740,7 @@
           .catch((error) => {
             console.error('Não foi possível criar um novo artista');
             console.log(error);
+
             this.$bvModal.hide('modal-novo-artista');
             this.show_prancheta = false;
           });
@@ -742,7 +766,6 @@
         this.$axios
           .$post("album", this.novoAlbum)
           .then((response) => {
-            console.log('Resposta do servidor obtida');
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.$bvModal.hide('modal-novo-album');
             this.show_prancheta = false;
@@ -751,6 +774,7 @@
           .catch((error) => {
             console.error('Não foi possível criar um novo album');
             console.log(error);
+
             this.$bvModal.hide('modal-novo-album');
             this.show_prancheta = false;
           });
@@ -775,7 +799,6 @@
         this.$axios
           .$post("musica", this.novaMusica)
           .then((response) => {
-            console.log('Resposta do servidor obtida', response);
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.$bvModal.hide('modal-nova-musica');
             this.show_prancheta = false;
@@ -784,6 +807,7 @@
           .catch((error) => {
             console.error('Não foi possível criar uma nova música');
             console.log(error);
+
             this.$bvModal.hide('modal-nova-musica');
             this.show_prancheta = false;
           });

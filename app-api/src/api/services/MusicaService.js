@@ -26,9 +26,7 @@ module.exports = {
     },
 
     addNew: async function (musica){
-
-        console.log("Dados de música recebidos:", musica);
-        
+                
         // Criando a música com os dados fornecidos
         const data = await MusicaRepository.create(musica);
 

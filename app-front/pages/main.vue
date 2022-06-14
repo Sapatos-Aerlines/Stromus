@@ -468,6 +468,17 @@
   export default {
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
+
+    const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
+
+    // Check if user is logged in.
+      if (authToken === null) {
+          // This means that there ISN'T JWT and no user is logged in.
+          $axios.defaults.headers.common.Authorization = null;
+      } else {
+          // This means that there IS a JWT so someone must be logged in.
+          $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
+      }
       let artistas, albuns, musicas, totalRows, time_set_inicio;
 
       try {

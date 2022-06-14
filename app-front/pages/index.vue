@@ -48,12 +48,12 @@ export default {
     methods: {
         doLogin(event) {
             event.preventDefault();
-
             this.$axios
                 .post("http://localhost:5000/login", this.login)
                 .then((response) => {
-                    console.log(response.data);
-                    console.log(response);
+                    //console.log("response.data: "+JSON.stringify(response.data));
+                    //console.log("response: "+JSON.stringify(response));
+                    localStorage.setItem("token", response.data.token) // armazena o token do usuário
                     this.$router.push("/main");
                 })
                 .catch((error) => {

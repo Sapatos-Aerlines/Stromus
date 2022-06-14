@@ -7,11 +7,11 @@ module.exports = {
             const userLogin = await UserService.getByUsername(req.body.username);
 
             if (userLogin) {
-                console.log(userLogin);
                 const authenticated = await utils.comparePwd(req.body.pwd, userLogin.pwd);
                 if (authenticated) {
                     const token = utils.signJwt(userLogin._id);
                     //console.log("TOKEN: ", token)
+                    
                     userLogin.token = token; // funcionando para salvar o token
                     res.set('Authorization', `Bearer ${token}`); // não tá funcionando
                     res.status(200).send(userLogin);

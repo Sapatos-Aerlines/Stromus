@@ -115,14 +115,14 @@
         <div class="top-bar">
             <div class="container">
                 <div class="player-controls">
-                    <a href="#" class="icon_control" id="jplayer_repeat"><em class="icn_ctrl fa-2x fas fa-redo-alt icons_secundarios status_repeteco"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_repeat" @click="config_repeteco_alea(0)"><em class="icn_ctrl fa-2x fas fa-redo-alt icons_secundarios status_repeteco"></em></a>
                     <a href="#" class="icon_control" id="jplayer_anterior" @click="pular_faixa(0)"><em class="icn_ctrl fa-2x fas fa-fast-backward"></em></a>
                     <a href="#" class="icon_control" v-if="!player_tocando"><em class="icn_ctrl fa-2x fas fa-play-circle" @click="player_tocando = true 
                     tocar_musica()"></em></a>
                     <a href="#" class="icon_control" v-if="player_tocando" @click="player_tocando=false 
                     pausar_musica()"><em class="icn_ctrl fa-2x fas fa-pause-circle"></em></a>
                     <a href="#" class="icon_control" id="jplayer_proximo" @click="pular_faixa(1)"><em class="icn_ctrl fa-2x fas fa-fast-forward"></em></a>
-                    <a href="#" class="icon_control" id="jplayer_random"><em class="icn_ctrl fa-2x fas fa-random icons_secundarios status_random"></em></a>
+                    <a href="#" class="icon_control" id="jplayer_random" @click="config_repeteco_alea(1)"><em class="icn_ctrl fa-2x fas fa-random icons_secundarios status_random"></em></a>
                 </div>
 
                 <div id="opcs_progress" class="player-timeline">
@@ -654,7 +654,7 @@
           idArtista : null
         },
         musica_atual : {
-          id_musica: 3,
+          id_musica: 2,
           nome: "Let's Go All The Way",
           artista: "Sly Fox",
           capa_album: "https://i.scdn.co/image/ab67616d0000b27315829e16e5bf808322242655",
@@ -664,12 +664,14 @@
           conv_tmp_duracao: "00:00",
           source: "songs/1.mp3"
         },
-        playlist_atual: [1, 2, 3]
+        playlist_atual: [1, 2],
+
+        opcao_repeteco: true,
+        opcao_aleatorio: false
       };
     },
 
     methods: {
-      
       busca_nome_artista: function(id_artista){
         
         if(!id_artista) return 'Artista desconhecido';
@@ -777,6 +779,10 @@
         
         this.timeout_progress = setTimeout(() => {
           if(porcentagem < 100 || isNaN(porcentagem)) this.atualiza_barra_progresso();
+          else{ // Termino da música
+            if(this.opcao_repeteco)
+              this.pular_faixa(1);
+          }
         }, 500)
       },
 
@@ -829,6 +835,8 @@
 
       altera_faixa_atual: function(id_nova_faixa){
         
+        console.log(id_nova_faixa);
+        
         if(this.timeout_progress != null){
           this.timeout_progress = null;
           document.getElementById("progress_bar").style.width = `0%`;
@@ -852,9 +860,10 @@
         )
       
         this.musica_atual = {
-          nome: null,
-          artista: null,
-          capa_album: null,
+          id_musica: dados_musica.id,
+          nome: dados_musica.nome,
+          artista: artista[0].nome,
+          capa_album: album[0].capa,
           tempo_tocado: null,
           tempo_duracao: null,
           conv_tmp_tocado: "00:00",
@@ -862,14 +871,10 @@
           source: null
         }
 
-        this.musica_atual.capa_album = album[0].capa;
-        this.musica_atual.nome = dados_musica.nome;
-        this.musica_atual.artista = artista[0].nome;
-
         if(this.musica_atual.nome == "Aerie")
           this.musica_atual.source = "songs/2.mp3";
         else
-          this.musica_atual.source = "songs/reserva.mp3";
+          this.musica_atual.source = "songs/1.mp3";
 
         this.tocar_musica();
       },
@@ -877,24 +882,50 @@
       pular_faixa: function(caso) {
         
         const song = document.getElementById("jqjp_audio_0");
-        // Avançar
-        if(caso){
+        let proxima_faixa;
 
-          let proxima_faixa = this.playlist_atual[this.playlist_atual.indexOf(this.musica_atual.id_musica) + 1];
-          console.log(this.playlist_atual.indexOf(this.musica_atual.id_musica), proxima_faixa);
-
-          if(!proxima_faixa) proxima_faixa = this.playlist_atual[0];
+        if(song.currentTime > 5 && !caso){
+          song.currentTime = 0;
+        }else{
+          // Avançar
+          if(caso){
+            proxima_faixa = this.playlist_atual[this.playlist_atual.indexOf(this.musica_atual.id_musica) + 1];
+            if(!proxima_faixa) proxima_faixa = this.playlist_atual[0];
+          }else{ // Retornar 
+            if(song.currentTime > 5){ // Reinicia a música atual
+              song.currentTime = 0;
+            }else{
+              proxima_faixa = this.playlist_atual[this.playlist_atual.indexOf(this.musica_atual.id_musica) - 1];
+              if(!proxima_faixa) proxima_faixa = this.playlist_atual[this.playlist_atual.length - 1];
+            }
+          }
 
           this.altera_faixa_atual(proxima_faixa)
-        }else{ // Retornar 
-          if(song.currentTime > 5){ // Reinicia a música atual
-            song.currentTime = 0;
-          }else{
-            
-          }
-        }
 
-        if(!this.player_tocando) this.player_tocando = true;
+          if(!this.player_tocando) this.player_tocando = true;
+        }
+      },
+
+      config_repeteco_alea: function(caso){
+        
+        let alvos_altera = document.getElementsByClassName("icons_secundarios");
+
+        // 0 - Repeteco, 1 - Aleatório
+        if(!caso){
+          this.opcao_repeteco = !this.opcao_repeteco;
+
+          if(this.opcao_repeteco)
+            alvos_altera[0].style.color = "rgb(5, 2, 99) !important";
+          else
+            alvos_altera[0].style.color = "rgb(105, 105, 105) !important";
+        }else{
+          this.opcao_aleatorio = !this.opcao_aleatorio;
+
+          if(this.opcao_aleatorio)
+            alvos_altera[1].style.color = "rgb(5, 2, 99) !important";
+          else
+            alvos_altera[1].style.color = "rgb(105, 105, 105) !important";
+        }
       },
 
       createNewArtista: function (event) {

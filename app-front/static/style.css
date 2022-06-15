@@ -233,16 +233,22 @@ a:hover{
     padding-left: 1%;
     text-shadow: 0px 0px 2px black;
 }
-.item_playlist{
+.item_playlist, .item_playlist_artista_perfil{
     width: 98%;
     height: 40px;
     overflow: hidden;
+    padding-top: 3px;
+    padding-left: 10px;
     max-height: 40px;
     border-radius: 5px;
     transition: background-color .2s;
 }
 .item_playlist:hover{
     background-color: rgba(68, 68, 68, .7);
+}
+.item_playlist_artista_perfil{
+    min-height: 270px !important;
+    width: 250px !important;
 }
 .playing_now, .playing_now_cr{
     width: 20px;
@@ -363,16 +369,19 @@ a:hover{
     margin-top: 20px;
     margin-bottom: 40px;
 }
-#img_capa_album{
+#img_capa_album, #img_foto_artista{
     float: left;
     width: 250px;
     height: 250px;
     box-shadow: 0px 0px 15px black;
 }
+#img_foto_artista{
+    border-radius: 125px;
+}
 #nome_playlist_album{
-    color: white;
     padding-top: 8%;
     padding-left: 28.5%;
+    color: white !important;
 }
 #criador_playlist_album{
     font-size: 25px;
@@ -454,15 +463,20 @@ hr{
     margin-top: 30px;
     margin-left: 20px;
 }
-#qtd_faixas{
+#qtd_faixas, #qtd_musicas_artista{
     float: left;
     font-size: 20px;
     margin-top: 30px;
 }
+#qtd_musicas_artista{
+    margin-left: 25px;
+    margin-top: 10px;
+}
+
 #pagina_inicial{
     margin-bottom: 120px;
 }
-#play_recomendados, #musicas_recomendadas, #play_sem_dados{
+#play_recomendados, #musicas_recomendadas, #play_sem_dados, #faixas_populares_artista_perfil, #discografia_artista_perfil{
     width: 72%;
     padding: 15px;
     overflow: hidden;
@@ -475,7 +489,20 @@ hr{
 #musicas_recomendadas, #play_sem_dados{
     min-height: 50px;
 }
-.album_inicio_recomendados, .artista_inicio_recomendados{
+#discografia_artista_perfil{
+    float: left;
+    margin-left: 0%;
+    width: 100%;
+}
+#faixas_populares_artista_perfil{
+    width: 45%;
+    margin-left: 0%;
+}
+#descricao_artista{
+    float: right;
+    width: 42%;
+}
+.album_inicio_recomendados, .artista_inicio_recomendados, .album_artista_perfil{
     z-index: 5;
     float: left;
     padding: 5px;
@@ -485,7 +512,13 @@ hr{
     margin-left: 5% !important;
     background-color: rgb(34, 34, 34);
 }
-.musica_inicio_recomendados{
+.album_artista_perfil{
+    height: 310px;
+    width: 210px;
+    margin-left: 0% !important;
+    margin-right: 5% !important;
+}
+.musica_inicio_recomendados, .musicas_populares_artista{
     z-index: 5;
     float: left;
     width: 100%;
@@ -493,6 +526,9 @@ hr{
 }
 .nome_musica_list, .nome_artista_musica_list, .nome_album_musica_list, .tempo_musica_list{
     position: absolute;
+}
+.tempo_musica_list_react{
+    float: right;
 }
 .nome_musica_list{
     margin-top: -5px;
@@ -510,6 +546,7 @@ hr{
 .img_album_recomendado{
     width: 200px;
     height: 200px;
+    margin-top: 0px;
 }
 .artista_inicio_recomendados{
     text-align: center;
@@ -524,9 +561,13 @@ hr{
     position: absolute;
     flex-direction: column;
 }
-#lista_artistas, #lista_albuns{
+#lista_artistas, #lista_albuns, #painel_artista{
     margin-top: 5%;
     margin-left: 15%;
+}
+#painel_artista{
+    min-height: 900px;
+    margin-bottom: 200px;
 }
 #items-table{
     top: 25%;

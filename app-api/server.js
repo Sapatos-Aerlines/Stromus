@@ -4,5 +4,5 @@ require("dotenv").config();
 const port = process.env.SERVER_PORT || 8085;
 
 app.listen(port, () =>{
-    console.log(`Server listening on port ${port}`);
+    console.log(`Server escutando na porta ${port}`);
 });

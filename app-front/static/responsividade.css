@@ -9,6 +9,7 @@
 @media only screen and (min-width: 700px) and (max-width: 1366px){
     #painel_infos, .player-display, #capa_album, #infos_faixa{
         width: 240px;
+        margin-top: 0px;
     }
     #infos_faixa, #capa_album{
         height: 240px;
@@ -17,7 +18,7 @@
         margin-left: -9% !important;
     }
     .player-display{
-        padding-top: 132px;
+        padding-top: 95px;
     }
     #stromus_title{
         font-size: 32px;

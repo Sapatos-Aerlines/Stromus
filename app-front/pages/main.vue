@@ -2,6 +2,11 @@
   <div>
     <script src="https://kit.fontawesome.com/6c1b2d82eb.js" crossorigin="anonymous"></script>
     
+    <!-- Player -->
+    <div id="jquery_jplayer"><audio id="jqjp_audio_0" preload="none" src="#" style="opacity: 0"></audio></div>
+
+    <div id="opcoes_fx"></div>
+
     <!-- Navegação -->
     <b-navbar id="painel_infos">
       <h1 id="stromus_title">Stromus</h1>
@@ -98,11 +103,11 @@
   </div>
 
   <div id="infos_faixa">
-      <img id="capa_album" src="https://i.scdn.co/image/ab67616d0000b2734cf0b29eb06a92aa96acae64">
+      <img id="capa_album" :src="musica_atual.capa_album">
 
       <div class="player-display">
-          <span id="nome_artista" style="text-shadow: 0px 0px 3px black !important;">C418</span><br>
-          <span id="nome_faixa" style="text-shadow: 0px 0px 3px black !important; filter: drop-shadow(0px 0px 15px black);">Aria Math</span>
+          <span id="nome_artista" style="text-shadow: 0px 0px 3px black !important;">{{musica_atual.nome}}</span><br>
+          <span id="nome_faixa" style="text-shadow: 0px 0px 3px black !important; filter: drop-shadow(0px 0px 15px black);">{{musica_atual.artista}}</span>
       </div>
   </div>
 
@@ -112,20 +117,22 @@
                 <div class="player-controls">
                     <a href="#" class="icon_control" id="jplayer_repeat"><em class="icn_ctrl fa-2x fas fa-redo-alt icons_secundarios status_repeteco"></em></a>
                     <a href="#" class="icon_control" id="jplayer_anterior"><em class="icn_ctrl fa-2x fas fa-fast-backward"></em></a>
-                    <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
-                    <a href="#" class="icon_control" id="jplayer_pause"><em class="icn_ctrl fa-2x fas fa-pause-circle"></em></a>
+                    <a href="#" class="icon_control" v-if="!player_tocando"><em class="icn_ctrl fa-2x fas fa-play-circle" @click="player_tocando = true 
+                    tocar_musica()"></em></a>
+                    <a href="#" class="icon_control" v-if="player_tocando" @click="player_tocando=false 
+                    pausar_musica()"><em class="icn_ctrl fa-2x fas fa-pause-circle"></em></a>
                     <a href="#" class="icon_control" id="jplayer_proximo"><em class="icn_ctrl fa-2x fas fa-fast-forward"></em></a>
                     <a href="#" class="icon_control" id="jplayer_random"><em class="icn_ctrl fa-2x fas fa-random icons_secundarios status_random"></em></a>
                 </div>
 
                 <div id="opcs_progress" class="player-timeline">
-                    <a href="#"><div id="jplayer_tempo_execucao" style="float: left;">00:00</div></a>
-                    <a href="#"><div id="barra_progresso" class="player-timeline-control" onclick="altera_tempo_tocado()"><div id="progress_bar"></div></div></a>
-                    <a href="#"><div id="jplayer_tempo_total" style="float: right;">00:00</div></a>
+                    <a href="#"><div id="jplayer_tempo_execucao" style="float: left;">{{musica_atual.conv_tmp_tocado}}</div></a>
+                    <a href="#"><div id="barra_progresso" class="player-timeline-control" @click="altera_tempo_tocado()"><div id="progress_bar"></div></div></a>
+                    <a href="#"><div id="jplayer_tempo_total" style="float: right;">{{musica_atual.conv_tmp_duracao}}</div></a>
                 </div>
 
                 <div class="volume_control">
-                    <em class="fas fa-volume-down fa-2x" onclick="desliga_som()"></em>
+                    <em class="fas fa-volume-down fa-2x"></em>
                     <div id="jplayer_volume_bar" class="jp-volume-bar">
                         <div id="jplayer_volume_bar_value" class="jp-volume-bar-value"></div>
                     </div>
@@ -301,7 +308,7 @@
                   <hr>
                   <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
-                  <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+                  <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
                   
                   <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
@@ -349,7 +356,7 @@
             <a href="#" class="musica_inicio_recomendados">
               <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
-              <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+              <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
               
               <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
@@ -381,7 +388,7 @@
               <a href="#" class="musicas_populares_artista">
                 <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
-                <a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+                <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
 
                 <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
@@ -504,7 +511,7 @@
                 v-bind:items="filterSearchMusica">
               
               <template #cell(nome)="cellData">
-                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
+                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
                   <b-button class='btn_remover' v-on:click="removeSelectedMusica(cellData.item.id)">Remover</b-button>
               </template>
         </b-table>
@@ -535,14 +542,14 @@
   export default {
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
-
+      
       const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
       // Check if user is logged in.
       if (authToken === null) {
           // This means that there ISN'T JWT and no user is logged in.
           $axios.defaults.headers.common.Authorization = null;
-          this.$router.push("/");
+          redirect('/')
       } else {
           // This means that there IS a JWT so someone must be logged in.
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
@@ -591,6 +598,9 @@
         curtidaView: false,
         playlistLateral: false,
         
+        player_tocando: false,
+        timeout_progress: null,
+
         painel_album: false,
         painel_artista: false,
 
@@ -642,12 +652,22 @@
           idAlbum : null,
           duracao : null,
           idArtista : null
+        },
+        musica_atual : {
+          nome: "Let's Go All The Way",
+          artista: "Sly Fox",
+          capa_album: "https://i.scdn.co/image/ab67616d0000b27315829e16e5bf808322242655",
+          tempo_tocado: null,
+          tempo_duracao: null,
+          conv_tmp_tocado: "00:00",
+          conv_tmp_duracao: "00:00",
+          source: "songs/1.mp3"
         }
       };
     },
 
     methods: {
-
+      
       busca_nome_artista: function(id_artista){
         
         if(!id_artista) return 'Artista desconhecido';
@@ -723,6 +743,133 @@
           console.log(res.AbstractText);
           // this.descricao_artista = res.AbstractText;
         })
+      },
+
+      formata_tempo_musica: function(valor_base){
+        const sec = parseInt(valor_base, 10);
+
+        let hours   = Math.floor(sec / 3600); // get hours
+        let minutes = Math.floor((sec - (hours * 3600)) / 60); // get minutes
+        let seconds = sec - (hours * 3600) - (minutes * 60);
+
+        return `${("0"+ minutes).substr(-2)}:${("0"+ seconds).substr(-2)}`;
+      },
+
+      atualiza_barra_progresso: function(){
+        
+        const song = document.getElementById("jqjp_audio_0");
+
+        if(isNaN(this.musica_atual.tempo_duracao))
+          this.musica_atual.tempo_duracao = song.duration;
+
+        if(this.musica_atual.conv_tmp_duracao == "00:00" || isNaN(this.musica_atual.conv_tmp_duracao)){
+          this.musica_atual.conv_tmp_duracao = this.formata_tempo_musica(song.duration);
+          this.musica_atual.tempo_duracao = song.duration;
+        }
+
+        this.musica_atual.conv_tmp_tocado = this.formata_tempo_musica(song.currentTime);
+
+        // Barra de progresso da música
+        let porcentagem = (100 * song.currentTime) / this.musica_atual.tempo_duracao;
+        document.getElementById("progress_bar").style.width = `${porcentagem}%`;
+
+        this.timeout_progress = setTimeout(() => {
+          if(porcentagem < 100 || isNaN(porcentagem)) this.atualiza_barra_progresso();
+        }, 500)
+      },
+
+      tocar_musica: function(){
+
+        if(this.timeout_progress != null){
+          this.timeout_progress = null;
+          document.getElementById("progress_bar").style.width = `0%`;
+        }
+
+        const song = document.getElementById("jqjp_audio_0");
+        song.src = this.musica_atual.source;
+        let tempo_tocado = this.musica_atual.tempo_tocado || 0;
+
+        song.currentTime = tempo_tocado;
+        // song.volume = 5;
+        song.play();
+
+        // Alterando o banner de fundo para a capa do álbum
+        const banner_fundo = document.getElementById("fundo_capa");
+        banner_fundo.style.background = `url(${this.musica_atual.capa_album})`;
+
+        this.atualiza_barra_progresso();
+      },
+      
+      pausar_musica: function(){
+        const song = document.getElementById("jqjp_audio_0");
+
+        this.musica_atual.tempo_tocado = song.currentTime
+        song.pause();
+
+        this.timeout_progress = null;
+      },
+
+      altera_tempo_tocado: function(){
+
+          let a = document.getElementById("barra_progresso");
+          let b = document.getElementById("opcs_progress");
+          const distancia_left = a.offsetLeft + b.offsetLeft;
+
+          let e = window.event;
+          let posX = e.clientX;
+
+          const song = document.getElementById("jqjp_audio_0");
+
+          let porcentagem = ((100 * (distancia_left - posX) / 430) * -1);
+          let tempo_custom = (this.musica_atual.tempo_duracao * porcentagem) / 100;
+          song.currentTime = tempo_custom;
+      },
+
+      altera_faixa_atual: function(id_nova_faixa){
+        
+        if(this.timeout_progress != null){
+          this.timeout_progress = null;
+          document.getElementById("progress_bar").style.width = `0%`;
+        }
+
+        const song = document.getElementById("jqjp_audio_0");
+        song.pause();
+
+        let dados_musica = this.musicas.filter((musica) => 
+          musica.id == id_nova_faixa
+        )
+
+        dados_musica = dados_musica[0];
+
+        let artista = this.artistas.filter((artista) => 
+          artista.id == dados_musica.idArtista
+        )
+        
+        let album = this.albuns.filter((album) =>
+          album.id == dados_musica.idAlbum
+        )
+      
+        this.musica_atual = {
+          nome: null,
+          artista: null,
+          capa_album: null,
+          tempo_tocado: null,
+          tempo_duracao: null,
+          conv_tmp_tocado: "00:00",
+          conv_tmp_duracao: "00:00",
+          source: null
+        }
+
+        this.musica_atual.capa_album = album[0].capa;
+        this.musica_atual.nome = dados_musica.nome;
+        this.musica_atual.artista = artista[0].nome;
+
+        if(this.musica_atual.nome == "Aerie")
+          this.musica_atual.source = "songs/2.mp3";
+        else
+          this.musica_atual.source = "songs/reserva.mp3";
+
+        this.tocar_musica();
       },
 
       createNewArtista: function (event) {

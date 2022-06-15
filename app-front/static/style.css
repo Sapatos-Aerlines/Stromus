@@ -63,12 +63,13 @@ body{
     margin-left: 5px;
     margin-right: 5px;
     border-radius: 5px;
-    background: rgb(105, 105, 105);
+    background: rgb(65, 65, 65);
 }
 #progress_bar{
     width: 0%;
     height: 4px;
     border-radius: 5px;
+    background-color: rgb(5, 2, 99);
     transition: background-color .5s linear, width .1s;
 }
 a{
@@ -91,13 +92,15 @@ a:hover{
 }
 #jplayer_volume_bar_value{
     left: 5%;
+    overflow: hidden;
     z-index: 5 !important;
     transition: width .2s;
     transition: background-color .5s linear;
 }
 #jplayer_volume_bar{
     margin-top: 15px;
-    background-color: rgb(105, 105, 105);
+    border-radius: 15px;
+    background-color: rgb(65, 65, 65);
 }
 .jp-volume-bar {
     left: 22px;
@@ -108,8 +111,9 @@ a:hover{
     overflow: hidden;
 }
 .jp-volume-bar-value {
-    width: 0px;
+    width: 50%;
     height: 5px;
+    background-color: rgb(5, 2, 99);
 }
 #fundo_capa{
     width: 100%;
@@ -139,10 +143,10 @@ a:hover{
     background-color: rgba(0, 0, 0, .7);
 }
 .volume_control{
-    width: 10%;
+    width: 13%;
     float: right;
     margin-top: 9px;
-    margin-right: 12%;
+    margin-right: 10%;
     padding-right: 10px;
 }
 .fa-volume-down{

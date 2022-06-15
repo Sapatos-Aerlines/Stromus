@@ -543,7 +543,7 @@
       if (authToken === null) {
           // This means that there ISN'T JWT and no user is logged in.
           $axios.defaults.headers.common.Authorization = null;
-          this.$router.push("/");
+          redirect('/')
       } else {
           // This means that there IS a JWT so someone must be logged in.
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
@@ -558,7 +558,6 @@
         totalRows = artistas.length;
       } catch (ex) {
         console.log(ex);
-        redirect('/')
       }
 
       try {

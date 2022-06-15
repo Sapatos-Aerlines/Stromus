@@ -466,8 +466,9 @@
 
 <script>
   export default {
+
     //Executado quando a instância do Vue estiver construída
-    async asyncData({ $axios }) {
+    async asyncData({ $axios, redirect }) {
 
     const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
@@ -488,6 +489,7 @@
         totalRows = artistas.length;
       } catch (ex) {
         console.log(ex);
+        redirect('/')
       }
 
       try {

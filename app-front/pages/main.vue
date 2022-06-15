@@ -540,9 +540,9 @@
 
 <script>
   export default {
+
     //Executado quando a instância do Vue estiver construída
     async asyncData({ $axios }) {
-      
       const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
       // Check if user is logged in.

@@ -9,7 +9,7 @@ const MusicaRoutes = require("./src/api/routes/MusicaRoutes")
 const app = express();
 
 //Configuração dos middlewares
-app.use(cors({credentials: true, origin: true}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json()); // Converterá qualquer corpo em JSON em um objeto javascript
 
 app.use(AlbumRoutes);

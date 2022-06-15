@@ -26,9 +26,7 @@ module.exports = {
      },
 
     addNew: async function (album){
-
-        console.log("Dados de álbum recebidos:", album);
-        
+   
         if(!album.idArtista) return console.log("Artista não especificado, cancelando")
 
         // Criando o álbum com os dados fornecidos

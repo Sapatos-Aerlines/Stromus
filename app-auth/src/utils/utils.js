@@ -6,8 +6,6 @@ module.exports ={
     async encryptPwd(pwd){
         const salt = await bcrypt.genSalt(saltRounds);
         try{
-            // console.log(pwd);
-            // console.log(saltRounds);
             return await bcrypt.hash(pwd.toString(), salt);
         } catch(error){
             console.log(error);
@@ -16,8 +14,6 @@ module.exports ={
     }, 
 
     async comparePwd(uncrypted, encrypted){
-        // console.log(uncrypted);
-        // console.log(encrypted);
         return await bcrypt.compare(uncrypted.toString(), encrypted);
     }, 
 

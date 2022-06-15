@@ -13,7 +13,7 @@ dbo.connectToServer(function (err) {
     
     // start the Express server
     app.listen(port, () =>{
-        console.log(`Server funcionando na porta ${port}`);
+        console.log(`Server escutando na porta ${port}`);
     });
   });
 

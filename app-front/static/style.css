@@ -69,7 +69,7 @@ body{
     width: 0%;
     height: 4px;
     border-radius: 5px;
-    background-color: rgb(5, 2, 99);
+    background-color: rgb(39, 167, 160);
     transition: background-color .5s linear, width .1s;
 }
 a{
@@ -98,6 +98,7 @@ a:hover{
     transition: background-color .5s linear;
 }
 #jplayer_volume_bar{
+    width: 100px;
     margin-top: 15px;
     border-radius: 15px;
     background-color: rgb(65, 65, 65);
@@ -113,7 +114,7 @@ a:hover{
 .jp-volume-bar-value {
     width: 50%;
     height: 5px;
-    background-color: rgb(5, 2, 99);
+    background-color: rgb(39, 167, 160);
 }
 #fundo_capa{
     width: 100%;
@@ -303,7 +304,7 @@ a:hover{
     color: white;
     overflow: auto;
     position: fixed;
-    background-color: rgb(5, 4, 43, .8);
+    background-color: rgba(4, 39, 43, 0.8);
 }
 .titulo_pag{
     color: white !important;
@@ -642,7 +643,6 @@ hr{
 }
 .item_coluna{
     float: left !important;
-    background-color: yellow !important;
 }
 .nome_artista, .seguidores_artista{
     color: white !important;

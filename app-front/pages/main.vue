@@ -128,12 +128,12 @@
                 <div id="opcs_progress" class="player-timeline">
                     <a href="#"><div id="jplayer_tempo_execucao" style="float: left;">{{musica_atual.conv_tmp_tocado}}</div></a>
                     <a href="#"><div id="barra_progresso" class="player-timeline-control" @click="altera_tempo_tocado()"><div id="progress_bar"></div></div></a>
-                    <a href="#"><div id="jplayer_tempo_total" style="float: right;">{{musica_atual.conv_tmp_duracao}}</div></a>
+                    <a href="#" @click="opcao_reverso_tempo = !opcao_reverso_tempo"><div id="jplayer_tempo_total" style="float: right;">{{musica_atual.conv_tmp_duracao}}</div></a>
                 </div>
 
-                <div class="volume_control">
+                <div id="opcs_volume" class="volume_control">
                     <em class="fas fa-volume-down fa-2x"></em>
-                    <div id="jplayer_volume_bar" class="jp-volume-bar">
+                    <div id="jplayer_volume_bar" class="jp-volume-bar" @click="altera_volume_musica()">
                         <div id="jplayer_volume_bar_value" class="jp-volume-bar-value"></div>
                     </div>
                 </div>
@@ -655,19 +655,20 @@
         },
         musica_atual : {
           id_musica: 2,
-          nome: "Let's Go All The Way",
-          artista: "Sly Fox",
-          capa_album: "https://i.scdn.co/image/ab67616d0000b27315829e16e5bf808322242655",
+          nome: "One Vision",
+          artista: "Queen",
+          capa_album: "https://i.scdn.co/image/ab67616d0000b273ee74ffacfeb2b593261d4be1",
           tempo_tocado: null,
           tempo_duracao: null,
           conv_tmp_tocado: "00:00",
           conv_tmp_duracao: "00:00",
-          source: "songs/1.mp3"
+          source: "songs/3.mp3"
         },
-        playlist_atual: [1, 2],
-
+        playlist_atual: [2],
+        
         opcao_repeteco: true,
-        opcao_aleatorio: false
+        opcao_aleatorio: false,
+        opcao_reverso_tempo: true
       };
     },
 
@@ -797,7 +798,12 @@
         }
 
         this.musica_atual.conv_tmp_tocado = this.formata_tempo_musica(song.currentTime);
-        
+
+        if(this.opcao_reverso_tempo)
+          this.musica_atual.conv_tmp_duracao = this.formata_tempo_musica(song.duration - song.currentTime);
+        else
+          this.musica_atual.conv_tmp_duracao = this.formata_tempo_musica(song.duration);
+
         // Barra de progresso da música
         let porcentagem = (100 * song.currentTime) / this.musica_atual.tempo_duracao;
         document.getElementById("progress_bar").style.width = `${porcentagem}%`;
@@ -900,6 +906,25 @@
           this.musica_atual.source = "songs/1.mp3";
 
         this.tocar_musica();
+      },
+
+      altera_volume_musica: function(){
+        const song = document.getElementById("jqjp_audio_0");
+
+        let a = document.getElementById("jplayer_volume_bar");
+        let b = document.getElementById("opcs_volume");
+        console.log(a.offsetLeft, b.offsetLeft);
+
+        const distancia_left = a.offsetLeft + b.offsetLeft;
+        let e = window.event;
+        let posX = e.clientX;
+
+        let porcentagem = (((100 * (distancia_left - posX) / 983) - 100) * -1);
+
+        porcentagem = porcentagem * 10;
+        document.getElementById("jplayer_volume_bar_value").style.width = `${porcentagem}%`;
+
+        song.volume = porcentagem / 100;
       },
 
       pular_faixa: function(caso) {

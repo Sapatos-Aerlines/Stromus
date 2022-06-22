@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
     name: "Login",
 
@@ -48,7 +49,7 @@ export default {
             this.$axios
                 .post("http://localhost:5000/login", this.login)
                 .then((response) => {
-                    localStorage.setItem("token", response.data.token) // armazena o token do usuário
+                    this.$store.commit('setToken', response.data.token)
                     this.$router.push("/main");
                 })
                 .catch((error) => {

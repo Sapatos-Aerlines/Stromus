@@ -1,18 +1,21 @@
 <template>
     <div>
-        <b-container>
-            <img style="width: 100px;" src="~/assets/login_logo.png" alt />
 
+        <div id="filtro_fundo">
+            <div id="filtro_fundo_img"></div>
+        </div>
+
+        <b-container>
             <div class="login">
+                <img style="width: 100px;" src="~/assets/login_logo.png" alt />
+
                 <b-form @submit="doLogin">
-                    <b-form-group id="user" label="Usuário" label-for="user-input"
-                        description="Insira o seu nome de usuário (e-mail)." label-align="left">
+                    <b-form-group id="user" label="Usuário" label-for="user-input" label-align="left">
                         <b-form-input id="user-input" v-model="login.username" type="text" required
                             placeholder="Nome de usuário"></b-form-input>
                     </b-form-group>
 
-                    <b-form-group id="pwd" label="Senha" label-for="pwd-input" label-align="left"
-                        description="Insira a sua senha.">
+                    <b-form-group id="pwd" label="Senha" label-for="pwd-input" label-align="left">
                         <b-form-input id="pwd-input" v-model="login.pwd" type="password" required
                             placeholder="Senha"></b-form-input>
                     </b-form-group>
@@ -23,12 +26,6 @@
         </b-container>
     </div>
 </template>
-
-<style>
-    body{
-        background-color: rgba(0, 0, 0, .9);
-    }
-</style>
 
 <script>
 export default {

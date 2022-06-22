@@ -1,20 +1,39 @@
+#filtro_fundo, #filtro_fundo_img{
+    top: -2%;
+    left: -2%;
+    width: 104%;
+    height: 104%;
+    position: fixed;
+    filter: grayscale(1) blur(3px);
+    z-index: -20;
+}
+#filtro_fundo_img{
+    background-size: cover;
+    background-image: url("../static/images/background.png");
+}
 img {
-    /* margin-top: 50px; */
-    margin: 50px auto 0 auto;
+    margin: 0px auto 0px auto;
     display: block;
     width: 40%;
 }
 
 .login {
-    font-size: 1.5rem;
+    color: white;
     width: 500px;
-    margin: 20px auto 0px auto;
-    padding: 50px 50px 20px 50px;
+    font-size: 1.5rem;
     border-radius: 20px;
-    background-color: #cdeefb;
+    margin: 10% auto 0px auto;
+    padding: 50px 50px 20px 50px;
+    background-color: #272525de;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.37);
 }
 
 .login button {
-    background-color: rgb(98, 202, 202);
-    border-color: gray;
+    width: 100%;
+    color: black;
+    border: solid 0px;
+    background-color: rgb(22, 136, 111);
+}
+.login button:hover{
+    background-color: rgb(18, 90, 75);
 }

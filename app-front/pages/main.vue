@@ -436,7 +436,13 @@
                 v-bind:items="filterSearchArtista">
 
               <template #cell(foto)="cellData">
+                <a href="#" @click="
+                  artistaView = false
+                  painel_artista = true
+                  define_artista_alvo(cellData.item.id)
+                  busca_informacoes_artista(cellData.item.nome)">
                   <img class="foto_artista" v-bind:src="cellData.item.foto">
+                </a>
               </template>
 
               <template #cell(nome)="cellData">
@@ -447,7 +453,7 @@
                               busca_informacoes_artista(cellData.item.nome)">
                   <h1 class='nome_artista'>{{cellData.item.nome}}</h1></a>
                   
-                  <b-button class='btn_remover' v-on:click="removeSelectedArtista(cellData.item.id)">Remover</b-button>
+                  <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedArtista(cellData.item.id)"></i>
               </template>
 
               <template #cell(seguidores)="cellData">
@@ -540,14 +546,14 @@
   export default {
 
     //Executado quando a instância do Vue estiver construída
-    async asyncData({ $axios }) {
+    async asyncData({ $axios, $router }) {
       const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
       // Check if user is logged in.
       if (authToken === null) {
           // This means that there ISN'T JWT and no user is logged in.
-          $axios.defaults.headers.common.Authorization = null;
-          redirect('/')
+          // $axios.defaults.headers.common.Authorization = null;
+          // $router.push('/');
       } else {
           // This means that there IS a JWT so someone must be logged in.
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições

@@ -551,8 +551,9 @@
   export default {
 
     //Executado quando a instância do Vue estiver construída
-    async asyncData({ $axios }) {
-      const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
+    async asyncData({store, $axios, redirect }) {
+      console.log("STATE: "+ store.state.authenticationToken)
+      const authToken = typeof window !== 'undefined' ? store.state.authenticationToken : null // se tiver carregando client side, recupera o token do usuário
 
       // Check if user is logged in.
       if (authToken === null) {
@@ -771,7 +772,7 @@
           musica.idAlbum == id_album
         )
       },
-      
+
       define_playlist_atual: function(id_album) {
 
         let musicas_alvos = this.musicas.filter((musica) => 
@@ -1059,7 +1060,7 @@
         })
       },
 
-    createNewAlbum: function (event) {
+      createNewAlbum: function (event) {
         event.preventDefault();
         
         this.$axios

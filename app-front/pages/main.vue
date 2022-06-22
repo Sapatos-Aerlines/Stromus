@@ -99,7 +99,9 @@
       </div>
     </div>
 
-    <div id="faixas_pl"></div>
+    <div id="faixas_pl">
+      
+    </div>
   </div>
 
   <div id="infos_faixa">
@@ -321,7 +323,7 @@
       <div class="invent-table" v-if="painel_album" id="lista_artistas">
         <div v-for="album in album_alvo" :key="album.id">
           <div id="painel_album">
-            <a href="#">
+            <a href="#" @click="define_playlist_atual(album.id)">
               <img id="img_capa_album" :src="album.capa" />
             </a>
 
@@ -341,7 +343,9 @@
                 </a>
               </div>
 
-              <b-button v-b-modal.modal-nova-musica @click="mostra_prancheta(2)" variant="dark" class="btn_add">Adicionar uma música</b-button>
+              <b-button v-b-modal.modal-nova-musica @click="mostra_prancheta(2)" variant="dark" class="btn_add">Adicionar uma música</b-button> 
+
+              <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true"></i></a>
             </div>
           </div><br>
         
@@ -357,6 +361,7 @@
               
               <span class="tempo_musica_list">{{musica.duracao}}</span>
               
+              <a href="#" class='btn_add icon_editar'><i class="fa fa-pencil" aria-hidden="true"></i></a>
               <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
             </a>
           </div>
@@ -369,7 +374,7 @@
           <div id="painel_album">
             <img id="img_foto_artista" :src="artista.foto" />
             
-            <h1 id="nome_playlist_album">{{artista.nome}}</h1>
+            <h1 id="nome_playlist_album">{{artista.nome}}</h1> <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true"></i></a>
             <span id="qtd_musicas_artista">{{artista_music.length > 1 ? artista_music.length +" músicas" : artista_music.length > 0 ? "1 música" : "Nenhuma música"}}</span>
 
             <span id="descricao_artista">{{descricao_artista}}</span>
@@ -546,14 +551,14 @@
   export default {
 
     //Executado quando a instância do Vue estiver construída
-    async asyncData({ $axios, $router }) {
+    async asyncData({ $axios }) {
       const authToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null // se tiver carregando client side, recupera o token do usuário
 
       // Check if user is logged in.
       if (authToken === null) {
           // This means that there ISN'T JWT and no user is logged in.
-          // $axios.defaults.headers.common.Authorization = null;
-          // $router.push('/');
+          $axios.defaults.headers.common.Authorization = null;
+          redirect("/");
       } else {
           // This means that there IS a JWT so someone must be logged in.
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
@@ -735,7 +740,12 @@
             }
         }
 
-        this.$axios.$get(`musica/${id_artista}`).then((response) => {
+        // Buscando as músicas do artista pelo idArtista
+        this.$axios.$get(`musica`, {
+          params: {
+            idArtista: id_artista,
+          }
+        }).then((response) => {
           this.artista_music = response;
         })
 
@@ -760,8 +770,19 @@
         this.album_music = this.musicas.filter((musica) => 
           musica.idAlbum == id_album
         )
+      },
+      
+      define_playlist_atual: function(id_album) {
 
-        console.log(this.album_music, id_album);
+        let musicas_alvos = this.musicas.filter((musica) => 
+          musica.idAlbum == id_album
+        )
+        
+        this.playlist_atual = [];
+
+        for(let i = 0; i < musicas_alvos.length; i++){
+          this.playlist_atual.push(musicas_alvos[i].id);
+        }
       },
 
       // Função para buscar os dados do artista

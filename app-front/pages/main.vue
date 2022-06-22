@@ -337,7 +337,7 @@
                               painel_artista = true
                               define_artista_alvo(album.idArtista)
                               busca_informacoes_artista(busca_nome_artista(album.idArtista))">
-                  <span id="criador_playlist_album"><b>{{busca_nome_artista(album.idArtista)}}</b> ◦ <span style='font-size: 19px;'>{{album_music.length > 1 ? album_music.length +"faixas" : album_music.length > 0 ? "1 faixa" : "Nenhuma faixa"}}</span></span>
+                  <span id="criador_playlist_album"><b>{{busca_nome_artista(album.idArtista)}}</b> ◦ <span style='font-size: 19px;'>{{album_music.length > 1 ? album_music.length +" faixas" : album_music.length > 0 ? "1 faixa" : "Nenhuma faixa"}}</span></span>
                 </a>
               </div>
 
@@ -713,11 +713,8 @@
           this.define_artista_alvo(this.album_alvo[0].idArtista);
         })
 
-        this.$axios.$get(`musica/${id_album}`).then((response) => {
-          this.album_music = response; // Não retorna a lista de músicas registradas com base no ID do álbum informado
-
-          console.log(this.album_music, typeof id_album, id_album);
-        })
+        // Atualizando a lista de músicas do álbum selecionado
+        this.atualizar_lista_musicas(id_album);
       },
 
       define_artista_alvo: function(id_artista) {
@@ -743,9 +740,6 @@
       },
 
       formata_ano_lancamento: function(ano_lancamento){
-
-        console.log(ano_lancamento);
-
         return (ano_lancamento.toString()).slice(0, 4);
       },
 
@@ -754,8 +748,14 @@
         this.artista_album = this.albuns.filter((album) => 
           album.idArtista == id_artista
         )
+      },
+      
+      atualizar_lista_musicas: function(id_album){
+        this.album_music = this.musicas.filter((musica) => 
+          musica.idAlbum == id_album
+        )
 
-        console.log(this.artista_album);
+        console.log(this.album_music, id_album);
       },
 
       // Função para buscar os dados do artista
@@ -913,7 +913,6 @@
 
         let a = document.getElementById("jplayer_volume_bar");
         let b = document.getElementById("opcs_volume");
-        console.log(a.offsetLeft, b.offsetLeft);
 
         const distancia_left = a.offsetLeft + b.offsetLeft;
         let e = window.event;
@@ -924,7 +923,14 @@
         porcentagem = porcentagem * 10;
         document.getElementById("jplayer_volume_bar_value").style.width = `${porcentagem}%`;
 
-        song.volume = porcentagem / 100;
+        porcentagem = porcentagem / 100;
+
+        if(porcentagem > 1)
+          porcentagem = 1;
+        else if(porcentagem < 0)
+          porcentagem = 0;
+
+        song.volume = porcentagem;
       },
 
       pular_faixa: function(caso) {
@@ -1064,8 +1070,8 @@
       createNewMusica: function (event) {
         event.preventDefault();
         
-        // if(this.novaMusica.idAlbum == null)
-          // this.novaMusica.idAlbum = this.album_alvo[0].id;
+        if(this.novaMusica.idAlbum != this.album_alvo[0].id)
+          this.novaMusica.idAlbum = this.album_alvo[0].id;
 
         this.$axios
           .$post("musica", this.novaMusica)
@@ -1073,7 +1079,10 @@
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.$bvModal.hide('modal-nova-musica');
             this.prancheta_musica = false;
+
+            // Atualiza a lista de músicas do álbum
             this.updateMusica();
+            this.atualizar_lista_musicas(this.album_alvo[0].id);
           })
           .catch((error) => {
             console.error('Não foi possível criar uma nova música');

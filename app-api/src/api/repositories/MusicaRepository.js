@@ -50,6 +50,13 @@ class MusicaRepository {
         return await Musica.findAll();
     }
 
+    async update(musica) {
+        return await Musica.update(
+            musica,
+            { where: {id: musica.id}}
+        )
+    }
+
     async removeByName(nomeMusica) {
         return await Musica.destroy({
             where: {

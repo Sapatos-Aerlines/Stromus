@@ -3,9 +3,6 @@ const MusicaService = require("../services/MusicaService");
 module.exports = {
 
     listAll: function (req, res) {
-        //Blocking operation (Não fazer)
-        //return ItemPatrimonioRepository.all()
-        // console.log(ItemPatrimonioRepository.all());
         res.statusCode = 200; // Status HTTP para OK;
         MusicaService.getAll().then(
             musicas => {

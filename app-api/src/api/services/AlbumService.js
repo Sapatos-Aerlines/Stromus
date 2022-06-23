@@ -5,6 +5,10 @@ module.exports = {
         return AlbumRepository.all();
     },
 
+    update: async function (album){
+        return AlbumRepository.update(album);  
+    },
+
     getById: async function (idAlbum) {
         return AlbumRepository.findById(idAlbum);
     },

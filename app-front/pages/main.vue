@@ -150,7 +150,7 @@
     <div id="fundo_capa"></div>
     
     <!-- Modal para inserir novo artista -->
-    <b-modal id="modal-novo-artista" :title="titulo_prancheta" hide-footer>
+    <b-modal id="modal-artista" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_artista" rounded="sm">
         <b-form v-on:submit="modo_operantes">
           <label class="mr-sm-2" for="input_nome_artista">Nome do artista:</label>
@@ -191,7 +191,7 @@
     </b-modal>
     
     <!-- Modal para inserir novo album -->
-    <b-modal id="modal-novo-album" :title="titulo_prancheta" hide-footer>
+    <b-modal id="modal-album" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_album" rounded="sm">
         <b-form v-on:submit="modo_operantes">
           <label class="mr-sm-2" for="input_nome_album">Nome do álbum:</label>
@@ -225,7 +225,7 @@
     </b-modal>
 
     <!-- Modal para inserir uma nova música -->
-    <b-modal id="modal-nova-musica" :title="titulo_prancheta" hide-footer>
+    <b-modal id="modal-musica" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_musica" rounded="sm">
         <b-form v-on:submit="modo_operantes">
           <label class="mr-sm-2" for="input_nome_musica">Nome da música:</label>
@@ -350,11 +350,10 @@
                 </a>
               </div>
 
-              <b-button v-b-modal.modal-nova-musica @click="limpa_dados_objeto(3)
-              mostra_prancheta(3)" variant="dark" class="btn_add">Adicionar uma música</b-button> 
+              <b-button v-b-modal.modal-musica @click="limpa_dados_objeto(3)" variant="dark" class="btn_add">Adicionar uma música</b-button> 
 
               <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true" 
-              @click="inicia_edicao(2, album.id)" v-b-modal.modal-novo-album></i></a>
+              @click="inicia_edicao(2, album.id)" v-b-modal.modal-album></i></a>
             </div>
           </div><br>
         
@@ -370,8 +369,7 @@
               
               <span class="tempo_musica_list">{{musica.duracao}}</span>
               
-              <a href="#" class='btn_add icon_editar' @click="mostra_prancheta(3) 
-              inicia_edicao(3, musica.id)" v-b-modal.modal-nova-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a href="#" class='btn_add icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
               <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
             </a>
           </div>
@@ -384,7 +382,7 @@
           <div id="painel_album">
             <img id="img_foto_artista" :src="artista.foto" />
             
-            <h1 id="nome_playlist_album">{{artista.nome}}</h1> <a href="#" class='btn_add' @click="inicia_edicao(1, artista.id)" v-b-modal.modal-novo-artista><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            <h1 id="nome_playlist_album">{{artista.nome}}</h1> <a href="#" class='btn_add' @click="inicia_edicao(1, artista.id)" v-b-modal.modal-artista><i class="fa fa-pencil" aria-hidden="true"></i></a>
             <span id="qtd_musicas_artista">{{artista_music.length > 1 ? artista_music.length +" músicas" : artista_music.length > 0 ? "1 música" : "Nenhuma música"}}</span>
 
             <span id="descricao_artista">{{descricao_artista}}</span>
@@ -409,8 +407,7 @@
 
           <div id="discografia_artista_perfil">
 
-            <b-button v-b-modal.modal-novo-album @click="limpa_dados_objeto(2)
-            mostra_prancheta(2)" variant="dark" class="btn_add">Adicionar um álbum</b-button>
+            <b-button v-b-modal.modal-album @click="limpa_dados_objeto(2)" variant="dark" class="btn_add">Adicionar um álbum</b-button>
 
             <div v-if="artista_album.length > 0">
               <br><h2>Discografia</h2>
@@ -434,8 +431,7 @@
       <div class="invent-table" v-if="artistaView" id="lista_artistas">
 
         <div class="barra_topo_opcoes">
-          <b-button v-b-modal.modal-novo-artista @click="limpa_dados_objeto(1)
-          mostra_prancheta(1)" variant="dark" class="btn_add">Adicionar um artista</b-button>
+          <b-button v-b-modal.modal-artista @click="limpa_dados_objeto(1)" variant="dark" class="btn_add">Adicionar um artista</b-button>
 
           <b-nav-form class="input_pesquisa">
             <b-form-input
@@ -762,13 +758,9 @@
         }
 
         // Buscando as músicas do artista pelo idArtista
-        this.$axios.$get(`musica`, {
-          params: {
-            idArtista: id_artista,
-          }
-        }).then((response) => {
-          this.artista_music = response;
-        })
+        this.artista_music = this.musicas.filter((musica) => 
+              musica.idArtista == id_artista
+            )
 
         // Filtrando os álbuns do artista
         this.artista_album = this.albuns.filter((album) => 
@@ -811,25 +803,21 @@
         console.log(tipo_alvo, id_alvo);
 
         // 1 -> Artista, 2 -> "Album", 3 -> Música
-        if(tipo_alvo){
+        if(tipo_alvo == 1){
           this.$axios.$get(`artista/${id_alvo}`).then((response) => {
             this.novoArtista = response[0];
-            
-            console.log(this.novoArtista);
 
             this.titulo_prancheta = "Atualizar Artista";
             this.modo_operantes = this.updateSelectedArtista;
-            this.btn_edit_artista = !this.btn_edit_artista;
+            this.btn_edit_artista = true;
           })
         }else if(tipo_alvo == 2){
           this.$axios.$get(`album/${id_alvo}`).then((response) => {
             this.novoAlbum = response[0];
 
-            console.log(this.novoAlbum);
-
             this.titulo_prancheta = "Atualizar Álbum";
             this.modo_operantes = this.updateSelectedAlbum;
-            this.btn_edit_album = !this.btn_edit_album;
+            this.btn_edit_album = true;
           })
         }else{
           this.$axios.$get(`musica/${id_alvo}`).then((response) => {
@@ -837,23 +825,22 @@
             
             this.titulo_prancheta = "Atualizar Música";
             this.modo_operantes = this.updateSelectedMusic;
-            this.btn_edit_musica = !this.btn_edit_musica;
+            this.btn_edit_musica = true;
           })
         }
       },
 
       limpa_dados_objeto: function(caso){
         
-        console.log("Limpando o objeto");
-
         // 1 -> Artista, 2 -> Álbum, 3 -> Música
-        if(caso){ // Artista
+        if(caso == 1){ // Artista
           this.novoArtista = {
             foto: null,
             nome: null,
             seguidores: null
           }
 
+          this.btn_edit_artista = false;
           this.titulo_prancheta = "Novo Artista";
           this.modo_operantes = this.createNewArtista;
         }else if(caso == 2){ // Álbum
@@ -864,6 +851,7 @@
             dataLancamento: null
           }
 
+          this.btn_edit_album = false;
           this.titulo_prancheta = "Novo Álbum";
           this.modo_operantes = this.createNewAlbum;
         }else{
@@ -875,8 +863,7 @@
             idArtista: null
           }
 
-          console.log(this.novaMusica);
-
+          this.btn_edit_musica = false;
           this.titulo_prancheta = "Nova Música";
           this.modo_operantes = this.createNewMusica;
         }
@@ -1110,17 +1097,6 @@
         this.playlistLateral = !this.playlistLateral;
       },
 
-      mostra_prancheta: function(caso){
-
-        // 1 -> Artista; 2 -> Álbum; 3 -> Música
-        if(caso)
-          this.prancheta_artista = !this.prancheta_artista;
-        else if(caso == 2)
-          this.prancheta_album = !this.prancheta_album;
-        else
-          this.prancheta_musica = !this.prancheta_musica;
-      },
-
       createNewArtista: function (event) {
         event.preventDefault();
 
@@ -1128,18 +1104,15 @@
         this.$axios
           .$post("artista", this.novoArtista)
           .then((response) => {
-            // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
-            this.$bvModal.hide('modal-novo-artista');
-            this.prancheta_artista = false;
             this.updateArtista();
           })
           .catch((error) => {
             console.error('Não foi possível criar um novo artista');
             console.log(error);
-
-            this.$bvModal.hide('modal-novo-artista');
-            this.prancheta_artista = false;
           });
+
+          this.$bvModal.hide('modal-artista');
+          this.prancheta_artista = false;
       },
 
       updateArtista: function () {
@@ -1162,7 +1135,7 @@
             console.log(error);
           });
 
-          this.$bvModal.hide('modal-novo-artista');
+          this.$bvModal.hide('modal-artista');
           this.modo_operantes = this.createNewArtista;
       },
 
@@ -1175,13 +1148,14 @@
 
       createNewAlbum: function (event) {
         event.preventDefault();
-        
+
+        if(this.novoAlbum.idArtista != this.artista_alvo[0].id)
+          this.novoAlbum.idArtista = this.artista_alvo[0].id;
+
         this.$axios
           .$post("album", this.novoAlbum)
           .then((response) => {
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
-            this.$bvModal.hide('modal-novo-album');
-            this.prancheta_album = false;
             this.updateAlbum();
 
             this.atualizar_lista_albuns(this.novoAlbum.idArtista);
@@ -1189,10 +1163,10 @@
           .catch((error) => {
             console.error('Não foi possível criar um novo album');
             console.log(error);
-
-            this.$bvModal.hide('modal-novo-album');
-            this.prancheta_album = false;
           });
+
+          this.$bvModal.hide('modal-album');
+          this.prancheta_album = false;
       },
 
       updateAlbum: function () {
@@ -1214,7 +1188,7 @@
             console.log(error);
           });
 
-          this.$bvModal.hide('modal-novo-album');
+          this.$bvModal.hide('modal-album');
           this.modo_operantes = this.createNewAlbum;
       },
 
@@ -1231,6 +1205,9 @@
         if(this.novaMusica.idAlbum != this.album_alvo[0].id)
           this.novaMusica.idAlbum = this.album_alvo[0].id;
 
+        if(this.novaMusica.idArtista != this.artista_alvo[0].id)
+          this.novaMusica.idArtista = this.artista_alvo[0].id;
+
         this.$axios
           .$post("musica", this.novaMusica)
           .then((response) => {
@@ -1243,7 +1220,7 @@
             console.log(error);
           });
 
-          this.$bvModal.hide('modal-nova-musica');
+          this.$bvModal.hide('modal-musica');
           this.prancheta_musica = false;
       },
 
@@ -1267,7 +1244,7 @@
             console.log(error);
           });
 
-          this.$bvModal.hide('modal-nova-musica');
+          this.$bvModal.hide('modal-musica');
           this.modo_operantes = this.createNewMusica;
       },
 

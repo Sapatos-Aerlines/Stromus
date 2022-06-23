@@ -29,7 +29,7 @@ module.exports = {
         });
     },
 
-    update: function(){
+    update: function(req, res){
         const {id, nome, dataLancamento, capa, idArtista} = req.body
         AlbumService.update(
             {id, nome, dataLancamento, capa, idArtista}

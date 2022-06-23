@@ -5,7 +5,7 @@ const MusicaController = require("../controllers/MusicaController");
 const routes = Router();
 
 routes.post("/musica", verifyJWT, MusicaController.add);
-routes.post("/musica/update", MusicaController.update)
+routes.post("/musica/update", MusicaController.update);
 routes.get("/musica", verifyJWT, MusicaController.listAll);
 routes.get("/musica/:id", verifyJWT, MusicaController.getById);
 routes.get("/musica/:nome", verifyJWT, MusicaController.getByName);

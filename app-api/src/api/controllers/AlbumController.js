@@ -29,6 +29,21 @@ module.exports = {
         });
     },
 
+    update: function(){
+        const {id, nome, dataLancamento, capa, idArtista} = req.body
+        AlbumService.update(
+            {id, nome, dataLancamento, capa, idArtista}
+        ).then((status) => {
+            res.statusCode = 201; // Status HTTP para created;
+            res.set("Content-Type", "application/json");
+            res.send(JSON.stringify(status));
+        }).catch(error => {
+            console.error(error);
+            res.statusCode = 500; //Status HTTP para erro interno
+            res.set("Content-Type", "application/text");
+            res.send(error.message);
+        });
+    },
     // handler para recuperar uma música por id
     getById: function (req, res) {
         const id = req.params.id;

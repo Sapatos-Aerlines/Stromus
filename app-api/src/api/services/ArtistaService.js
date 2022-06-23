@@ -5,6 +5,10 @@ module.exports = {
         return ArtistaRepository.all();
     },
 
+    update: async function (artista){
+        return ArtistaRepository.update(artista);  
+    },
+
     getById: async function (artistaId){
         return ArtistaRepository.findById(artistaId)
     },

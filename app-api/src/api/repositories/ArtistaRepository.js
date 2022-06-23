@@ -26,6 +26,13 @@ class ArtistaRepository{
         return await Artista.findAll();
     }
 
+    async update(artista) {
+        return await Artista.update(
+            artista,
+            { where: {id: artista.id}}
+        )
+    }
+
     async removeId(idArtista){
         return await Artista.destroy({
             where: {

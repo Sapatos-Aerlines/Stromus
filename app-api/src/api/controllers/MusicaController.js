@@ -17,10 +17,10 @@ module.exports = {
 
     // handler para adcionar nova música no banco
     add: function (req, res) {
-        const {idArtista, idAlbum, nome, duracao, estilo} = req.body
+        const {id, idArtista, idAlbum, nome, duracao, estilo} = req.body
         
         MusicaService.addNew(
-            {idArtista, idAlbum, nome, duracao, estilo}
+            {id, idArtista, idAlbum, nome, duracao, estilo}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
             res.set("Content-Type", "application/json");
@@ -34,9 +34,9 @@ module.exports = {
     },
 
     update: function (req, res){
-        const {idArtista, idAlbum, nome, duracao, estilo} = req.body
+        const {id, idArtista, idAlbum, nome, duracao, estilo} = req.body
         MusicaService.update(
-            {idArtista, idAlbum, nome, duracao, estilo}
+            {id, idArtista, idAlbum, nome, duracao, estilo}
         ).then((status) => {
             res.statusCode = 201; // Status HTTP para created;
             res.set("Content-Type", "application/json");

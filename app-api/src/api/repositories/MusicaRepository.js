@@ -51,6 +51,7 @@ class MusicaRepository {
     }
 
     async update(musica) {
+        
         return await Musica.update(
             musica,
             { where: {id: musica.id}}

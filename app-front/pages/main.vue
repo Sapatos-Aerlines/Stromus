@@ -222,7 +222,7 @@
     <!-- Modal para inserir uma nova música -->
     <b-modal id="modal-nova-musica" title="Nova Música" hide-footer>
       <b-overlay :show="prancheta_musica" rounded="sm">
-        <b-form v-on:submit="createNewMusica">
+        <b-form v-on:submit="updateSelectedMusic">
           <label class="mr-sm-2" for="input_nome_musica">Nome da música:</label>
           <b-form-input
             id="input_nome_musica"
@@ -247,12 +247,14 @@
           
           <br><br>
 
-          <b-button type="submit" variant="primary" @click="prancheta_musica = !prancheta_musica">Registrar</b-button>
+          <b-button v-if="!prancheta_edit_musica" type="submit" variant="primary" @click="prancheta_musica = !prancheta_musica">Registrar</b-button>
+          <b-button v-if="prancheta_edit_musica" type="submit" variant="primary" @click="prancheta_edit_musica = !prancheta_edit_musica">Atualizar</b-button>
+
           <b-button type="reset" variant="danger">Limpar formulário</b-button>
         </b-form>
       </b-overlay>
     </b-modal>
-
+    
     <div id="bg_stromus">
       <div class="invent-cards" v-if="inicioView">        
           <div id="pagina_inicial">
@@ -345,7 +347,8 @@
 
               <b-button v-b-modal.modal-nova-musica @click="mostra_prancheta(2)" variant="dark" class="btn_add">Adicionar uma música</b-button> 
 
-              <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true" 
+              @click="inicia_edicao('c', album.id)"></i></a>
             </div>
           </div><br>
         
@@ -361,7 +364,8 @@
               
               <span class="tempo_musica_list">{{musica.duracao}}</span>
               
-              <a href="#" class='btn_add icon_editar'><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a href="#" class='btn_add icon_editar' @click="inicia_edicao('s', musica.id)
+              mostra_prancheta(3)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
               <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
             </a>
           </div>
@@ -374,7 +378,7 @@
           <div id="painel_album">
             <img id="img_foto_artista" :src="artista.foto" />
             
-            <h1 id="nome_playlist_album">{{artista.nome}}</h1> <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            <h1 id="nome_playlist_album">{{artista.nome}}</h1> <a href="#" class='btn_add' @click="inicia_edicao('a', artista.id)"><i class="fa fa-pencil" aria-hidden="true"></i></a>
             <span id="qtd_musicas_artista">{{artista_music.length > 1 ? artista_music.length +" músicas" : artista_music.length > 0 ? "1 música" : "Nenhuma música"}}</span>
 
             <span id="descricao_artista">{{descricao_artista}}</span>
@@ -603,6 +607,11 @@
         prancheta_artista: false,
         prancheta_album: false,
         prancheta_musica: false,
+
+        prancheta_edit_artista: false,
+        prancheta_edit_album: false,
+        prancheta_edit_musica: false,
+        
         inicioView: true,
         albumView: false,
         artistaView: false,
@@ -626,6 +635,8 @@
         artistas: [],
         albuns: [],
         musicas: [],
+
+        modo_operantes: null,
 
         estilos_musica: [
           {text: "Escolha um:", value:null},
@@ -659,6 +670,7 @@
           dataLancamento : null
         },
         novaMusica : {
+          id: null,
           nome : null,
           estilo : null,
           idAlbum : null,
@@ -783,6 +795,38 @@
 
         for(let i = 0; i < musicas_alvos.length; i++){
           this.playlist_atual.push(musicas_alvos[i].id);
+        }
+      },
+
+      inicia_edicao: function(tipo_alvo, id_alvo){
+        
+        console.log(tipo_alvo, typeof tipo_alvo);
+
+        // "a" -> Artista, "c" -> "Album", "s" -> Música
+        if(tipo_alvo == "a"){
+          this.$axios.$get(`artista/${id_alvo}`).then((response) => {
+            this.novoArtista = response[0];
+          })
+
+          this.prancheta_edit_artista = !this.prancheta_edit_artista;
+
+        }else if(tipo_alvo == "c"){
+          this.$axios.$get(`album/${id_alvo}`).then((response) => {
+            this.novoAlbum = response[0];
+          })
+
+          this.prancheta_edit_album = !this.prancheta_edit_album;
+        }else{
+          this.$axios.$get(`musica/${id_alvo}`).then((response) => {
+
+            console.log(response[0]);
+            this.novaMusica = response[0];
+          })
+
+          this.modo_operantes = this.updateSelectedMusic;
+          this.prancheta_edit_musica = !this.prancheta_edit_musica;
+          
+          console.log(this.prancheta_edit_musica);
         }
       },
 
@@ -1126,6 +1170,30 @@
           this.musicas = response;
           this.totalRows = this.musicas.length;
         })
+      },
+
+      updateSelectedMusic: function (event) {
+        event.preventDefault();
+
+        console.log(this.novaMusica);
+
+        // Veja mais sobre em https://axios.nuxtjs.org/usage
+        this.$axios
+          .$post("musica/update", this.novaMusica)
+          .then((response) => {
+
+            // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
+            this.$bvModal.hide('modal-edit-musica');
+            this.prancheta_edit_musica = false;
+            this.updateArtista();
+          })
+          .catch((error) => {
+            console.error('Não foi possível atualizar a música selecionada');
+            console.log(error);
+
+            this.$bvModal.hide('modal-edit-musica');
+            this.prancheta_edit_musica = false;
+          });
       },
 
       removeSelectedMusica: function (id) {

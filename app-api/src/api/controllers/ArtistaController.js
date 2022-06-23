@@ -29,7 +29,7 @@ module.exports = {
         });
     },
 
-    update: function(){
+    update: function(req, res){
         const {id, nome, seguidores, foto} = req.body
         ArtistaService.update(
             {id, nome, seguidores, foto}
@@ -47,7 +47,7 @@ module.exports = {
 
     // handler para recuperar um artista por id
     getById: function (req, res) {
-        const artistaId = req.params.artistaId;
+        const artistaId = req.params.id;
         ArtistaService.getById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam
             artistaId).then((artista) => {

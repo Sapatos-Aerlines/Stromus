@@ -42,6 +42,13 @@ class AlbumRepository {
         return await Album.findAll();
     }
 
+    async update(album) {
+        return await Album.update(
+            album,
+            { where: {id: album.id}}
+        )
+    }
+
     async removeByName(nomeAlbum) {
         return await Album.destroy({
             where: {

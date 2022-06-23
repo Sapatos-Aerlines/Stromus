@@ -5,6 +5,8 @@ const AlbumController = require("../controllers/AlbumController");
 const routes = Router();
 
 routes.post("/album", verifyJWT, AlbumController.add);
+routes.post("/album/update", AlbumController.update);
+
 routes.get("/album", verifyJWT, AlbumController.listAll);
 routes.get("/album/:id", verifyJWT, AlbumController.getById);
 routes.get("/album/:ano", verifyJWT, AlbumController.getByAno);

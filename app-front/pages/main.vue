@@ -542,7 +542,7 @@
                 v-bind:items="filterSearchMusica">
               
               <template #cell(nome)="cellData">
-                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
+                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(cellData.item.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
 
                   <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(cellData.item.id)"></i>
               </template>

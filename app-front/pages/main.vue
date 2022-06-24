@@ -22,7 +22,7 @@
               albumView = false
               musicaView = false
               curtidaView = false
-              playListlateral = false
+              playlistLateral = false
               painel_album = false
               painel_artista = false
             ">
@@ -99,8 +99,23 @@
       </div>
     </div>
 
-    <div id="faixas_pl">
-      
+    <div id="faixas_pl" v-if="playlist_tocando.length > 0">
+
+      <h1 id="playlist_name">{{busca_nome_album(playlist_tocando[0].idAlbum)}}</h1>
+      <br>
+
+      <div class="item_playlist" v-for="(musica, index) in playlist_tocando" :key="musica.id">
+        <a href="#" @click="altera_faixa_atual(musica.id)">
+          <span class="numero_faixa num_faixa_cr">{{index + 1}}</span>
+          
+          <img class="img_cover" :src="busca_capa_album(musica.idAlbum)" />
+
+          <span class="nome_faixa_pl">{{musica.nome.length > 12 ? musica.nome.slice(0, 12) +"..." : musica.nome}}</span>
+          <br>
+          <span class="nome_artista_pl">{{busca_nome_artista(musica.idArtista)}}</span>
+        </a>
+        <br>
+      </div>
     </div>
   </div>
 
@@ -321,7 +336,7 @@
               <hr>
               <span>Insira artistas, álbuns e músicas para receber recomendações nesta tela.</span>
 
-              <button>Inserir artistas</button>
+              <button v-b-modal.modal-artista @click="limpa_dados_objeto(1)">Inserir artistas</button>
             </div>
         </div>
       </div>
@@ -637,7 +652,7 @@
         currentPage: 1,
         totalRows: 0,
         perPage: 50,
-        url: '',
+        url: "",
         
         artistas: [],
         albuns: [],
@@ -693,7 +708,8 @@
           source: "songs/3.mp3"
         },
         playlist_atual: [2],
-        
+        playlist_tocando: [],
+
         opcao_repeteco: true,
         opcao_aleatorio: false,
         opcao_reverso_tempo: true
@@ -716,21 +732,33 @@
         }
       },
 
-      busca_nome_album: function(id_album){
+      busca_nome_album: function(id_album, caso){
         
-        if(!id_album) return 'Álbum desconhecido';
+        if(typeof id_album == "undefined") return 'Álbum desconhecido';
         
         try{
-          for(let i = 0; i < this.albuns.length; i++){
-
-            if(this.albuns[i].id == id_album)
-              return this.albuns[i].nome.length > 25 ? this.albuns[i].nome.slice(0, 25) +"..." : this.albuns[i].nome.length;
+          for(let i = 0; i < this.albuns.length; i++){     
+            if(this.albuns[i].id == id_album){
+              if(typeof caso == "undefined")
+                return this.albuns[i].nome.length > 25 ? this.albuns[i].nome.slice(0, 25) +"..." : this.albuns[i].nome.length;
+              else
+                return this.albuns[i].nome;
+            }
           }
         }catch(err){
           return console.log("Não há álbuns registrados");
         }
       },
 
+      busca_capa_album: function(id_album){
+
+        let capa_album = this.albuns.filter((album) =>
+          album.id == id_album
+        )
+
+        return capa_album[0].capa;
+      },
+      
       // Atualiza as músicas para o álbum aberto
       define_album_alvo: function(id_album) {
 
@@ -786,21 +814,26 @@
       },
 
       define_playlist_atual: function(id_album) {
-
+        
         let musicas_alvos = this.musicas.filter((musica) => 
           musica.idAlbum == id_album
         )
         
+        // Previne atualizações de álbuns vazios
+        if(musicas_alvos.length < 1) return;
+
         this.playlist_atual = [];
 
         for(let i = 0; i < musicas_alvos.length; i++){
           this.playlist_atual.push(musicas_alvos[i].id);
         }
+
+        this.playlistLateral = true;
+        this.playlist_tocando = musicas_alvos;
+        this.altera_faixa_atual(this.playlist_atual[0]);
       },
 
       inicia_edicao: function(tipo_alvo, id_alvo){
-        
-        console.log(tipo_alvo, id_alvo);
 
         // 1 -> Artista, 2 -> "Album", 3 -> Música
         if(tipo_alvo == 1){
@@ -930,6 +963,8 @@
 
       tocar_musica: function(){
 
+        if(!this.player_tocando) this.player_tocando = true;
+
         if(this.timeout_progress != null){
           this.timeout_progress = null;
           document.getElementById("progress_bar").style.width = `0%`;
@@ -1013,6 +1048,8 @@
 
         if(this.musica_atual.nome == "Aerie")
           this.musica_atual.source = "songs/2.mp3";
+        else if(this.musica_atual.nome == "Skyfall")
+          this.musica_atual.source = "songs/4.mp3";
         else
           this.musica_atual.source = "songs/1.mp3";
 
@@ -1246,6 +1283,7 @@
 
           this.$bvModal.hide('modal-musica');
           this.modo_operantes = this.createNewMusica;
+          
       },
 
       removeSelectedMusica: function (id) {

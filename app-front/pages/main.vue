@@ -101,7 +101,7 @@
 
     <div id="faixas_pl" v-if="playlist_tocando.length > 0">
 
-      <h1 id="playlist_name">{{busca_nome_album(playlist_tocando[0].idAlbum)}}</h1>
+      <h1 id="playlist_name">{{nome_album_tocando}}</h1>
       <br>
 
       <div class="item_playlist" v-for="(musica, index) in playlist_tocando" :key="musica.id">
@@ -642,6 +642,7 @@
         playlistLateral: false,
         
         player_tocando: false,
+        nome_album_tocando: null,
         timeout_progress: null,
 
         painel_album: false,
@@ -733,21 +734,19 @@
       },
 
       busca_nome_album: function(id_album, caso){
+
+        let nome_album, album_pesquisa;
         
-        if(typeof id_album == "undefined") return 'Álbum desconhecido';
-        
-        try{
-          for(let i = 0; i < this.albuns.length; i++){     
-            if(this.albuns[i].id == id_album){
-              if(typeof caso == "undefined")
-                return this.albuns[i].nome.length > 25 ? this.albuns[i].nome.slice(0, 25) +"..." : this.albuns[i].nome.length;
-              else
-                return this.albuns[i].nome;
-            }
-          }
-        }catch(err){
-          return console.log("Não há álbuns registrados");
-        }
+        this.$axios.$get(`album/${id_album}`).then((response) => {
+          album_pesquisa = response[0];
+          
+          if(typeof caso == "undefined")
+            nome_album = album_pesquisa.nome.length > 25 ? album_pesquisa.nome.slice(0, 25) +"..." : album_pesquisa.nome.length;
+          else
+            nome_album = album_pesquisa.nome;
+          
+          this.nome_album_tocando = nome_album;
+        })
       },
 
       busca_capa_album: function(id_album){
@@ -829,6 +828,7 @@
         }
 
         this.playlistLateral = true;
+        this.busca_nome_album(id_album);
         this.playlist_tocando = musicas_alvos;
         this.altera_faixa_atual(this.playlist_atual[0]);
       },

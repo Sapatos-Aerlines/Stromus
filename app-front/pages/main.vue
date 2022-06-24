@@ -744,7 +744,7 @@
             nome_album = album_pesquisa.nome.length > 25 ? album_pesquisa.nome.slice(0, 25) +"..." : album_pesquisa.nome.length;
           else
             nome_album = album_pesquisa.nome;
-          
+
           this.nome_album_tocando = nome_album;
         })
       },
@@ -828,7 +828,7 @@
         }
 
         this.playlistLateral = true;
-        this.busca_nome_album(id_album);
+        this.busca_nome_album(id_album, true);
         this.playlist_tocando = musicas_alvos;
         this.altera_faixa_atual(this.playlist_atual[0]);
       },
@@ -1050,6 +1050,8 @@
           this.musica_atual.source = "songs/2.mp3";
         else if(this.musica_atual.nome == "Skyfall")
           this.musica_atual.source = "songs/4.mp3";
+        else if(this.musica_atual.nome == "Radio Ga Ga")
+          this.musica_atual.source = "songs/5.mp3";
         else
           this.musica_atual.source = "songs/1.mp3";
 

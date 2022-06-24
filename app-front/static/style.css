@@ -499,9 +499,8 @@ hr{
     min-height: 50px;
 }
 #discografia_artista_perfil{
-    float: left;
-    margin-left: 0%;
     width: 100%;
+    margin-left: 0%;
 }
 #faixas_populares_artista_perfil{
     width: 45%;
@@ -573,6 +572,7 @@ hr{
 #lista_artistas, #lista_albuns, #painel_artista{
     margin-top: 5%;
     margin-left: 15%;
+    margin-bottom: 150px;
 }
 #painel_artista{
     min-height: 900px;

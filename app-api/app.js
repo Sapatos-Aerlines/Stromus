@@ -4,7 +4,9 @@ const cors = require("cors");
 
 const ArtistaRoutes = require("./src/api/routes/ArtistaRoute")
 const AlbumRoutes = require("./src/api/routes/AlbumRoute")
-const MusicaRoutes = require("./src/api/routes/MusicaRoutes")
+const MusicaRoutes = require("./src/api/routes/MusicaRoute")
+const PlaylistRoutes = require("./src/api/routes/PlaylistRoute")
+const CurtidaRoutes = require("./src/api/routes/CurtidaRoute")
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.use(bodyParser.json()); // Converterá qualquer corpo em JSON em um objeto j
 app.use(AlbumRoutes);
 app.use(MusicaRoutes);
 app.use(ArtistaRoutes);
+app.use(PlaylistRoutes);
+app.use(CurtidaRoutes);
 
 //Exporta o aplicativo express configurado
 module.exports = app;

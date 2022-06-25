@@ -21,6 +21,7 @@
               artistaView = false
               albumView = false
               musicaView = false
+              playlistView = false
               curtidaView = false
               playlistLateral = false
               painel_album = false
@@ -36,6 +37,7 @@
               artistaView = true
               albumView = false
               musicaView = false
+              playlistView = false
               curtidaView = false
               painel_album = false
               painel_artista = false
@@ -50,6 +52,7 @@
               artistaView = false
               albumView = true
               musicaView = false
+              playlistView = false
               curtidaView = false
               painel_album = false
               painel_artista = false
@@ -64,11 +67,27 @@
               artistaView = false
               albumView = false
               musicaView = true
+              playlistView = false
               curtidaView = false
               painel_album = false
               painel_artista = false
             ">
             <h2><em class="icons_nav fas fa-music"></em>Músicas</h2>
+          </b-nav-item>
+
+          <!-- Button Playlists -->
+          <b-nav-item class='icons_nav_menu_lateral'
+            @click="
+              inicioView = false
+              artistaView = false
+              albumView = false
+              musicaView = false
+              playlistView = true
+              curtidaView = false
+              painel_album = false
+              painel_artista = false
+            ">
+            <h2><em class="icons_nav fas fa-compact-disc"></em>Playlists</h2>
           </b-nav-item>
 
           <!-- Button Curtidas -->
@@ -78,6 +97,7 @@
               artistaView = false
               albumView = false
               musicaView = false
+              playlistView = false
               curtidaView = true
               painel_album = false
               painel_artista = false
@@ -104,7 +124,7 @@
       <h1 id="playlist_name">{{nome_album_tocando}}</h1>
       <br>
 
-      <div class="item_playlist" v-for="(musica, index) in playlist_tocando" :key="musica.id">
+      <div class="item_playlist_lateral" v-for="(musica, index) in playlist_tocando" :key="musica.id">
         <a href="#" @click="altera_faixa_atual(musica.id)">
           <span class="numero_faixa num_faixa_cr">{{index + 1}}</span>
           
@@ -114,6 +134,10 @@
           <br>
           <span class="nome_artista_pl">{{busca_nome_artista(musica.idArtista)}}</span>
         </a>
+
+          <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
+
+          <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
         <br>
       </div>
     </div>
@@ -326,7 +350,10 @@
                   <span class="nome_artista_musica_list">{{busca_nome_artista(musica.idArtista)}}</span>
                   <span class="nome_album_musica_list">{{busca_nome_album(musica.idAlbum)}}</span>
 
-                  <span class="tempo_musica_list">{{musica.duracao}}</span>
+                  <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
+                  <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
+
+                  <span class="tempo_musica_list">{{formata_duracao(musica.duracao)}}</span>
                 </a>
               </div>
             </div>
@@ -382,10 +409,13 @@
 
               <span class="nome_artista_musica_list">{{busca_nome_artista(musica.idArtista)}}</span>
               
-              <span class="tempo_musica_list">{{musica.duracao}}</span>
-              
-              <a href="#" class='btn_add icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
-              <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
+              <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
+              <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
+
+              <a href="#" class='icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <i class="icon_excluir fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
+
+              <span class="tempo_musica_list">{{formata_duracao(musica.duracao)}}</span>
             </a>
           </div>
         </div>
@@ -415,7 +445,10 @@
 
                 <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
-                <span class="tempo_musica_list_react">{{musica.duracao}}</span>
+                <span class="tempo_musica_list_react">{{formata_duracao(musica.duracao)}}</span>
+
+                <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
+                <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
               </a>
             </div>
           </div>
@@ -445,10 +478,14 @@
       <!-- Tabela de artistas -->
       <div class="invent-table" v-if="artistaView" id="lista_artistas">
 
+        <h1 v-if="artistas.length > 0" class="titulo_pag musicas_curtidas">Artistas disponíveis <em class="icons_nav fas fa-user-astronaut"></em></h1>
+
+        <h1 v-else class="titulo_pag musicas_curtidas">Não há artistas no sistema, registre alguns! <em class="fa-solid fa-triangle-exclamation" aria-hidden="true"></em></h1>
+
         <div class="barra_topo_opcoes">
           <b-button v-b-modal.modal-artista @click="limpa_dados_objeto(1)" variant="dark" class="btn_add">Adicionar um artista</b-button>
 
-          <b-nav-form class="input_pesquisa">
+          <b-nav-form class="input_pesquisa" v-if="artistas.length > 0">
             <b-form-input
               size="sm"
               v-model="artistaSearch"
@@ -493,7 +530,11 @@
       <!-- Tabela de álbuns -->
       <div class="invent-table" v-if="albumView" id="lista_albuns">
 
-        <div class="barra_topo_opcoes">
+        <h1 v-if="albuns.length > 0" class="titulo_pag musicas_curtidas">Álbuns disponíveis <em class="icons_nav fas fa-book"></em></h1>
+
+        <h1 v-else class="titulo_pag musicas_curtidas">Não há álbuns no sistema, registre alguns! <em class="fa-solid fa-triangle-exclamation" aria-hidden="true"></em></h1>
+
+        <div class="barra_topo_opcoes" v-if="albuns.length > 0">
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
@@ -517,7 +558,7 @@
                 <h3 class="nome_item_album_curtido">{{album.nome.length > 20 ? album.nome.slice(0, 20) +"..." : album.nome}}</h3>
               </a>
               
-              <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedAlbum(album.id)"></i>
+              <i class="icon_excluir btn_excluir_album fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedAlbum(album.id)"></i>
             </div>
           </div>
         </div>
@@ -525,7 +566,54 @@
 
       <!-- Tabela de músicas -->
       <div class="invent-table" v-if="musicaView" id="lista_albuns">
-        <div class="barra_topo_opcoes">
+        
+        <h1 v-if="musicas.length > 0" class="titulo_pag musicas_curtidas">Músicas disponíveis <em class="icons_nav fas fa-music"></em></h1>
+
+        <h1 v-else class="titulo_pag musicas_curtidas">Não há músicas no sistema, registre algumas! <em class="fa-solid fa-triangle-exclamation" aria-hidden="true"></em></h1>
+
+        <div class="barra_topo_opcoes" v-if="musicas.length > 0">
+          <b-nav-form class="input_pesquisa">
+            <b-form-input
+              size="sm"
+              v-model="artistaSearch"
+              class="input_pesquisa_tam"
+              placeholder="Pesquisar"
+            ></b-form-input>
+          </b-nav-form>
+        </div>
+
+        <div v-for="(musica, index) in musicas" :key="musica.id">
+          <a href="#" class="musica_inicio_recomendados">
+            <hr>
+            <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
+
+            <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+            
+            <span class="nome_musica_list">{{musica.nome}}</span>
+
+            <span class="nome_artista_musica_list">{{busca_nome_artista(musica.idArtista)}}</span>
+            <span class="nome_album_musica_list">{{busca_nome_album(musica.idAlbum)}}</span>
+
+            <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
+            <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
+            
+            <a href="#" class='icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
+
+            <i class="icon_excluir fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
+
+            <span class="tempo_musica_list">{{formata_duracao(musica.duracao)}}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Tabela de playlists -->
+      <div class="invent-table" v-if="playlistView" id="lista_albuns">
+        
+        <h1 v-if="playlists.length > 0" class="titulo_pag musicas_curtidas">Playlists disponíveis <em class="icons_nav fas fa-compact-disc"></em></h1>
+
+        <h1 v-else class="titulo_pag musicas_curtidas">Não há playlists no sistema, registre algumas! <i class="fas fa-solid fa-triangle-exclamation"></i></h1>
+
+        <div class="barra_topo_opcoes" v-if="playlists.lenght > 0">
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
@@ -539,7 +627,7 @@
         <b-table id="items-table" borderless thead-class="d-none" fixed
                 :per-page="perPage" 
                 :current-page="currentPage" 
-                v-bind:items="filterSearchMusica">
+                v-bind:items="filterSearchPlaylist">
               
               <template #cell(nome)="cellData">
                   <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(cellData.item.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
@@ -548,11 +636,11 @@
               </template>
         </b-table>
       </div>
-
+      
       <!-- Tabela de músicas curtidas -->
       <div class="invent-table" v-if="curtidaView" id="lista_albuns">
-        <div class="barra_topo_opcoes">
-
+        
+        <div class="barra_topo_opcoes" v-if="curtidas.lenght > 0">
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
@@ -563,8 +651,30 @@
           </b-nav-form>
         </div>
 
-        <h1 class="titulo_pag musicas_curtidas">Suas músicas curtidas <em class="icons_nav fas fa-heart"></em></h1>
-        <div id="lista_faixas_curtidas"></div>
+        <h1 v-if="curtidas.length > 0" class="titulo_pag musicas_curtidas">Suas músicas curtidas <em class="icons_nav fas fa-heart"></em></h1>
+
+        <h1 v-else class="titulo_pag musicas_curtidas">Você ainda não curtiu nenhuma música <em class="fas fa-heart-broken" aria-hidden="true"></em></h1>
+
+        <div id="lista_faixas_curtidas" v-if="curtidas.length > 0">
+          <div v-for="(curtida, index) in curtidas" :key="curtida.id">
+            <a href="#" class="musica_inicio_recomendados">
+
+              <hr>
+              <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
+
+              <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(curtida.idMusica)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
+              
+              <span class="nome_musica_list">{{busca_nome_musica(curtida.idMusica)}}</span>
+
+              <span class="nome_artista_musica_list">{{busca_nome_artista(curtida.idMusica, 'curtida')}}</span>
+              <span class="nome_album_musica_list">{{busca_nome_album(curtida.idMusica, 'curtida')}}</span>
+
+              <i class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(curtida.id)"></i>
+
+              <span class="tempo_musica_list">{{formata_duracao(busca_tempo_duracao(curtida.idMusica))}}</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -572,8 +682,6 @@
 
 <script>
   export default {
-
-    //Executado quando a instância do Vue estiver construída
     async asyncData({store, $axios, redirect }) {
       console.log("STATE: "+ store.state.authenticationToken)
       const authToken = typeof window !== 'undefined' ? store.state.authenticationToken : null // se tiver carregando client side, recupera o token do usuário
@@ -588,7 +696,8 @@
           $axios.defaults.headers.common.Authorization = `Bearer ${authToken}`; // salva o token para usar nos headers nas requisições
       }
     
-      let artistas, albuns, musicas, totalRows, time_set_inicio;
+      let artistas, albuns, musicas, playlists, curtidas, totalRows, time_set_inicio;
+      let musicas_curtidas = [];
 
       try {
         const response = await $axios.$get('artista');
@@ -613,10 +722,28 @@
         console.log(ex);
       }
 
+      try {
+        const response = await $axios.$get('playlist');
+        playlists = response;
+      } catch (ex) {
+        console.log(ex);
+      }
+
+      try {
+        const response = await $axios.$get('curtida');
+        curtidas = response;
+
+        for(let i = 0; i < curtidas.length; i++){
+          musicas_curtidas.push(curtidas[i].idMusica);
+        }
+      } catch (ex){
+        console.log(ex);
+      }
+
       let horario = new Date();
       time_set_inicio = horario.getHours() >= 12 && horario.getHours() < 18 ? "Boa tarde" : horario.getHours() >= 18 || horario.getHours() < 6 ? "Boa noite" : "Bom dia"
 
-      return { artistas, albuns, musicas, totalRows, time_set_inicio }
+      return { artistas, albuns, musicas, playlists, curtidas, musicas_curtidas, totalRows, time_set_inicio }
     },
 
     name: 'IndexPage',
@@ -638,6 +765,7 @@
         albumView: false,
         artistaView: false,
         musicaView: false,
+        playlistView: false,
         curtidaView: false,
         playlistLateral: false,
         
@@ -658,6 +786,8 @@
         artistas: [],
         albuns: [],
         musicas: [],
+        playlist: [],
+        curtidas: [],
 
         estilos_musica: [
           {text: "Escolha um:", value:null},
@@ -708,8 +838,14 @@
           conv_tmp_duracao: "00:00",
           source: "songs/3.mp3"
         },
+        novaCurtida: {
+          idMusica: null,
+        },
+
         playlist_atual: [2],
         playlist_tocando: [],
+
+        musicas_curtidas: [],
 
         opcao_repeteco: true,
         opcao_aleatorio: false,
@@ -718,18 +854,25 @@
     },
 
     methods: {
-      busca_nome_artista: function(id_artista){
+      busca_nome_artista: function(id_artista, caso){
         
         if(!id_artista) return 'Artista desconhecido';
 
-        try{
-          for(let i = 0; i < this.artistas.length; i++){
+        if(typeof caso !== "undefined"){ // Música curtida
+          for(let i = 0; i < this.musicas.length; i++){
 
-            if(this.artistas[i].id == id_artista)
-              return this.artistas[i].nome;
+            if(this.musicas[i].idArtista == id_artista){
+              return this.busca_nome_artista_auto(this.musicas[i].idArtista);
+            }
           }
-        }catch(err){
-          return console.log("Não há artistas registrados");
+        }else
+          return this.busca_nome_artista_auto(id_artista);
+      },
+      
+      busca_nome_artista_auto: function(id_artista){
+        for(let i = 0; i < this.artistas.length; i++){
+          if(this.artistas[i].id == id_artista)
+            return this.artistas[i].nome;
         }
       },
 
@@ -741,12 +884,37 @@
           album_pesquisa = response[0];
           
           if(typeof caso == "undefined")
-            nome_album = album_pesquisa.nome.length > 25 ? album_pesquisa.nome.slice(0, 25) +"..." : album_pesquisa.nome.length;
+            nome_album = album_pesquisa.nome.length > 25 ? album_pesquisa.nome.slice(0, 25) +"..." : album_pesquisa.nome;
           else
             nome_album = album_pesquisa.nome;
 
           this.nome_album_tocando = nome_album;
         })
+      },
+
+      busca_nome_musica: function (id_musica){
+        for(let i = 0; i < this.musicas.length; i++){
+          if(this.musicas[i].id == id_musica)
+            return this.musicas[i].nome;
+        }
+      },
+
+      busca_tempo_duracao: function(id_musica){
+        for(let i = 0; i < this.musicas.length; i++){
+          if(this.musicas[i].id == id_musica)
+            return this.musicas[i].duracao;
+        }
+      },
+
+      busca_id_curtida: function(id_musica){
+        for(let i = 0; i < this.curtidas.length; i++){
+          if(this.curtidas[i].idMusica == id_musica)
+            return this.curtidas[i].id;
+        }
+      },
+
+      formata_duracao: function(tempo_duracao){
+        return tempo_duracao.slice(0, 5);
       },
 
       busca_capa_album: function(id_album){
@@ -1135,6 +1303,12 @@
       preview_lateral: function(){
         this.playlistLateral = !this.playlistLateral;
       },
+      
+      curtir_musica: function(id_musica){
+
+        this.novaCurtida.idMusica = id_musica;
+        this.createNewCurtida();
+      },
 
       createNewArtista: function (event) {
         event.preventDefault();
@@ -1142,7 +1316,7 @@
         // Veja mais sobre em https://axios.nuxtjs.org/usage
         this.$axios
           .$post("artista", this.novoArtista)
-          .then((response) => {
+          .then(() => {
             this.updateArtista();
           })
           .catch((error) => {
@@ -1166,7 +1340,7 @@
 
         this.$axios
           .$post("artista/update", this.novoArtista)
-          .then((response) => {
+          .then(() => {
             this.updateArtista();
           })
           .catch((error) => {
@@ -1193,7 +1367,7 @@
 
         this.$axios
           .$post("album", this.novoAlbum)
-          .then((response) => {
+          .then(() => {
             // Acessa o objeto que controla os modais e esconde aquele que você passar o id.
             this.updateAlbum();
 
@@ -1219,7 +1393,7 @@
 
         this.$axios
           .$post("album/update", this.novoAlbum)
-          .then((response) => {
+          .then(() => {
             this.updateAlbum();
           })
           .catch((error) => {
@@ -1249,7 +1423,7 @@
 
         this.$axios
           .$post("musica", this.novaMusica)
-          .then((response) => {
+          .then(() => {
             // Atualiza a lista de músicas do álbum
             this.updateMusica();
             this.atualizar_lista_musicas(this.album_alvo[0].id);
@@ -1275,7 +1449,7 @@
 
         this.$axios
           .$post("musica/update", this.novaMusica)
-          .then((response) => {
+          .then(() => {
             this.updateMusica();
           })
           .catch((error) => {
@@ -1294,52 +1468,74 @@
           this.updateMusica();
         })
       },
+
+      createNewCurtida: function () {
+
+        this.$axios
+          .$post("curtida", this.novaCurtida)
+          .then(() => {
+            this.updateCurtida();
+          })
+          .catch((error) => {
+            console.error('Não foi possível curtir essa música');
+            console.log(error);
+          });
+      },
+
+      updateCurtida: function () {
+        this.$axios.$get("curtida").then((response) => {
+          this.curtidas = response;
+          this.musicas_curtidas = [];
+
+          for(let i = 0; i < this.curtidas.length; i++){
+            this.musicas_curtidas.push(this.curtidas[i].idMusica);
+          }
+
+          this.totalRows = this.curtidas.length;
+        })
+      },
+
+      removeSelectedCurtida: function (id) {
+        this.$axios.$delete(`curtida/${id}`).then((response) => {
+          
+          console.log(response);
+          this.updateCurtida();
+        })
+      },
     },
 
     computed: {
       filterSearchArtista: function () {
-
-        try{
-          if(this.artistas.length > 0){
-            if (this.artistaSearch.length > 0) {
-              return this.artistas.filter((artista) => 
-                artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-              )
-            } else {
-              return this.artistas;
-            }
-          }
-        }catch(err){
-          return console.log("Não há artistas registrados para pesquisar");
-        }
+        if (this.artistaSearch.length > 0) {
+          return this.artistas.filter((artista) => 
+            artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+          )
+        } else
+          return this.artistas;
       },
       filterSearchAlbum: function () {
-        try{
-          if(this.albuns.length > 0){
-            if (this.artistaSearch.length > 0) {
-              return this.albuns.filter((album) => 
-                album.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-              )
-            } else {
-              return this.albuns;
-            }
-          }
-        }catch(err){
-          return console.log("Não há álbuns registrados para pesquisar");
-        }
+        if (this.artistaSearch.length > 0) {
+          return this.albuns.filter((album) => 
+            album.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+          )
+        } else
+          return this.albuns;
       },
       filterSearchMusica: function () {
-        try{
-          if (this.artistaSearch.length > 0) {
-            return this.musicas.filter((musica) => 
-              musica.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
-            )
-          } else {
-            return this.musicas;
-          }
-        }catch(err){
-          return console.log("Não há músicas registradas para pesquisar");
-        }
+        if (this.artistaSearch.length > 0) {
+          return this.musicas.filter((musica) => 
+            musica.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+          )
+        } else
+          return this.musicas;
+      },
+      filterSearchPlaylist: function() {
+        if (this.artistaSearch.length > 0) {
+          return this.playlists.filter((playlist) => 
+            playlist.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+          )
+        } else
+          return this.playlist;
       }
     },
   }

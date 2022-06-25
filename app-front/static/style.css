@@ -240,17 +240,21 @@ a:hover{
     padding-left: 1%;
     text-shadow: 0px 0px 2px black;
 }
-.item_playlist, .item_playlist_artista_perfil{
+.item_playlist, .item_playlist_artista_perfil, .item_playlist_lateral{
     width: 98%;
-    height: 60px;
+    height: 40px;
+    max-height: 40px;
     overflow: hidden;
     padding-top: 3px;
-    max-height: 60px;
     padding-left: 10px;
     border-radius: 5px;
     transition: background-color .2s;
 }
-.item_playlist:hover{
+.item_playlist_lateral{
+    height: 60px;
+    max-height: 60px;
+}
+.item_playlist:hover, .item_playlist_lateral:hover{
     background-color: rgba(68, 68, 68, .7);
 }
 .item_playlist_artista_perfil{
@@ -285,11 +289,18 @@ a:hover{
 }
 .curtir_faixa{
     float: right;
-    margin-top: -13px;
+    margin-left: 15px;
     padding-right: 10px;
 }
 .faixa_n_curtida{
     color: #888;
+}
+.faixa_n_curtida:hover{
+    color:rgb(39, 167, 160) !important;
+}
+.faixa_curtida{
+    color: rgb(39, 167, 160) !important;
+    filter: drop-shadow(0px 0px 5px rgb(39, 167, 160));
 }
 #buttons_nav{
     width: 300px;
@@ -314,11 +325,17 @@ a:hover{
     margin-left: 15%;
     text-shadow: 0px 0px 2px black;
 }
+.musicas_curtidas{
+    margin-left: 0px;
+}
 #lista_faixas_curtidas, #lista_biblioteca_pessoal, #lista_playlists_criadas, #content_faixas_playlist{
     width: 40%;
     transition: width 1s;
     /* margin-left: 25% !important; */
     /* margin-bottom: 150px !important; */
+}
+#lista_faixas_curtidas{
+    width: 100%;
 }
 #lista_biblioteca_pessoal, #lista_playlists_criadas{
     width: 50%;
@@ -532,7 +549,7 @@ hr{
     width: 100%;
     padding-bottom: -15px;
 }
-.nome_musica_list, .nome_artista_musica_list, .nome_album_musica_list, .tempo_musica_list{
+.nome_musica_list, .nome_artista_musica_list, .nome_album_musica_list{
     position: absolute;
 }
 .tempo_musica_list_react{
@@ -549,7 +566,8 @@ hr{
     margin-left: 20%;
 }
 .tempo_musica_list{
-    margin-left: 50%;
+    float: right;
+    margin-right: 20px;
 }
 .img_album_recomendado{
     width: 200px;
@@ -683,12 +701,20 @@ hr{
 }
 .icon_excluir, .icon_editar{
     float: right;
-    font-size: 23px;
     color: rgb(255, 92, 92) !important;
 }
+.btn_excluir_album{
+    padding-right: 10px;
+    margin-top: -190px;
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, .5));
+}
 .icon_editar{
-    padding-top: 0px;
-    color: auto;
+    background-color: #141414;
+    padding: 0px 10px 0px 10px;
+    margin-top: -2px;
+    font-size: 25px;
+    margin-left: 10px;
+    border-radius: 5px;
 }
 .icon_excluir:hover{
     color: rgb(255, 49, 49) !important;

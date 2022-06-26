@@ -13,10 +13,6 @@ module.exports = {
         return PlaylistRepository.findById(idPlaylist);
     },
 
-    getByNome: async function (nome) {
-        return PlaylistRepository.findByName(nome);
-    },
-
     addNew: async function (playlist){
                 
         // Criando a música com os dados fornecidos

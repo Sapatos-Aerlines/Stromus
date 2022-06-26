@@ -14,14 +14,6 @@ class PlaylistRepository {
         });
     }
 
-    async findByName(nomePlaylist) {
-        return await Playlist.findAll({
-            where: {
-                nome: nomePlaylist
-            }
-        });
-    }
-
     async all() {
         return await Playlist.findAll();
     }

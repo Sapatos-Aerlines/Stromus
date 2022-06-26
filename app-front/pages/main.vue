@@ -5,7 +5,29 @@
     <!-- Player -->
     <div id="jquery_jplayer"><audio id="jqjp_audio_0" preload="none" src="#" style="opacity: 0"></audio></div>
 
-    <div id="opcoes_fx"></div>
+    <div id="opcoes_fx">
+      <div v-if="opcoes_fx">
+        
+        <div id="opcoes_fx_dinamic" v-if="!add_a_playlist">
+          <a href="#" v-if="playlists.length > 0" @click="add_a_playlist = true">Adicionar a uma playlist</a>
+
+          <hr>
+          <a href="#" v-if="!musicas_curtidas.includes(faixa_alvo)" @click="curtir_musica(faixa_alvo)">Curtir faixa</a>
+          <a href="#" v-else @click="removeSelectedCurtida(busca_id_curtida(faixa_alvo))">Descurtir faixa</a>
+
+          <hr><a href="#" @click="redefine_opcoes_fx()">Cancelar</a>
+        </div>
+
+        <div v-else>
+          <a href="#" @click="redefine_opcoes_fx()">Cancelar</a>
+          
+          <!-- Lista de playlists registradas -->
+          <div v-for="playlist in playlists">
+            <hr><a href="#" @click="adicionar_a_playlist(playlist.id, faixa_alvo)">{{playlist.nome}}</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Navegação -->
     <b-navbar id="painel_infos">
@@ -126,6 +148,11 @@
 
       <div class="item_playlist_lateral" v-for="(musica, index) in playlist_tocando" :key="musica.id">
         <a href="#" @click="altera_faixa_atual(musica.id)">
+
+          <a href="#" class="add_faixa_playlist" @click="abre_opcoes_faixa(musica.id)">
+            <i class="fa-2x fas fa-ellipsis-v" aria-hidden="true"></i>
+          </a>
+
           <span class="numero_faixa num_faixa_cr">{{index + 1}}</span>
           
           <img class="img_cover" :src="busca_capa_album(musica.idAlbum)" />
@@ -188,7 +215,7 @@
 
     <div id="fundo_capa"></div>
     
-    <!-- Modal para inserir novo artista -->
+    <!-- Modal para inserir/editar artista -->
     <b-modal id="modal-artista" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_artista" rounded="sm">
         <b-form v-on:submit="modo_operantes">
@@ -229,7 +256,7 @@
       </b-overlay>
     </b-modal>
     
-    <!-- Modal para inserir novo album -->
+    <!-- Modal para inserir/editar album -->
     <b-modal id="modal-album" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_album" rounded="sm">
         <b-form v-on:submit="modo_operantes">
@@ -263,7 +290,7 @@
       </b-overlay>
     </b-modal>
 
-    <!-- Modal para inserir uma nova música -->
+    <!-- Modal para inserir/editar música -->
     <b-modal id="modal-musica" :title="titulo_prancheta" hide-footer>
       <b-overlay :show="prancheta_musica" rounded="sm">
         <b-form v-on:submit="modo_operantes">
@@ -299,6 +326,37 @@
       </b-overlay>
     </b-modal>
     
+    <!-- Modal para inserir/editar playlist -->
+    <b-modal id="modal-playlist" :title="titulo_prancheta" hide-footer>
+      <b-overlay :show="prancheta_playlist" rounded="sm">
+        <b-form v-on:submit="modo_operantes">
+          <label class="mr-sm-2" for="input_nome_playlist">Nome da Playlist:</label>
+          <b-form-input
+            id="input_nome_playlist"
+            v-model="novaPlaylist.nome"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            placeholder="Ex: Minhas preferidas"
+            required
+          ></b-form-input>
+
+          <label class="mr-sm-2" for="input_capa_playlis">Capa da Playlist:</label>
+          <b-form-input
+            id="input_capa_playlis"
+            v-model="novaPlaylist.capa"
+            class="mb-2 mr-sm-2 mb-sm-0"
+            required
+          ></b-form-input>
+          
+          <br><br>
+
+          <b-button v-if="!btn_edit_playlist" type="submit" variant="primary" @click="prancheta_playlist = !prancheta_playlist">Adicionar</b-button>
+          <b-button v-if="btn_edit_playlist" type="submit" variant="primary" @click="btn_edit_playlist = !btn_edit_playlist">Atualizar</b-button>
+
+          <b-button type="reset" variant="danger">Limpar formulário</b-button>
+        </b-form>
+      </b-overlay>
+    </b-modal>
+
     <div id="bg_stromus">
       <div class="invent-cards" v-if="inicioView">        
           <div id="pagina_inicial">
@@ -341,6 +399,11 @@
                 <a href="#" class="musica_inicio_recomendados">
                   
                   <hr>
+                  
+                  <a href="#" class="add_faixa_playlist" @click="abre_opcoes_faixa(musica.id)">
+                    <i class="fa-2x fas fa-ellipsis-v" aria-hidden="true"></i>
+                  </a>
+                  
                   <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
                   <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
@@ -372,13 +435,16 @@
       <div class="invent-table" v-if="painel_album" id="lista_artistas">
         <div v-for="album in album_alvo" :key="album.id">
           <div id="painel_album">
-            <a href="#" @click="define_playlist_atual(album.id)">
+            <a href="#" @click="define_playlist_atual(album.id)" v-if="album.tipo == 'Álbum'">
+              <img id="img_capa_album" :src="album.capa" />
+            </a>
+            <a href="#" @click="define_playlist_atual_personali(album.id)" v-else>
               <img id="img_capa_album" :src="album.capa" />
             </a>
 
             <div id="informacoes_album">
               <span id="tipo_playlist"><i class="fas fa-record-vinyl" aria-hidden="true"></i>
-              Álbum
+              {{album.tipo}}
               </span>
 
               <h1 id="nome_playlist_album">{{album.nome}}</h1>
@@ -388,19 +454,34 @@
                               painel_artista = true
                               define_artista_alvo(album.idArtista)
                               busca_informacoes_artista(busca_nome_artista(album.idArtista))">
-                  <span id="criador_playlist_album"><b>{{busca_nome_artista(album.idArtista)}}</b> ◦ <span style='font-size: 19px;'>{{album_music.length > 1 ? album_music.length +" faixas" : album_music.length > 0 ? "1 faixa" : "Nenhuma faixa"}}</span></span>
+                  <span id="criador_playlist_album">
+                    
+                    <b v-if="album.tipo == 'Álbum'">{{busca_nome_artista(album.idArtista)}}</b> 
+                    <b v-else>Playlist Customizada</b>
+                    
+                    ◦ <span style='font-size: 19px;'>{{album_music.length > 1 ? album_music.length +" faixas" : album_music.length > 0 ? "1 faixa" : "Nenhuma faixa"}}</span></span>
                 </a>
               </div>
 
-              <b-button v-b-modal.modal-musica @click="limpa_dados_objeto(3)" variant="dark" class="btn_add">Adicionar uma música</b-button> 
+              <b-button v-b-modal.modal-musica @click="limpa_dados_objeto(3)" variant="dark" class="btn_add" v-if="album.tipo == 'Álbum'">Adicionar uma música</b-button> 
 
-              <a href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true" 
+              <!-- Edição de álbum -->
+              <a v-if="album.tipo == 'Álbum'" href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true" 
               @click="inicia_edicao(2, album.id)" v-b-modal.modal-album></i></a>
+
+              <!-- Edição de playlist -->
+              <a v-else href="#" class='btn_add'><i class="fa fa-pencil" aria-hidden="true" 
+              @click="inicia_edicao(4, album.id)" v-b-modal.modal-playlist></i></a>
             </div>
           </div><br>
         
           <div class="item_playlist" v-for="(musica, index) in album_music" :key="musica.id">
             <a href="#" class="musica_inicio_recomendados">
+
+              <a href="#" class="add_faixa_playlist" @click="abre_opcoes_faixa(musica.id)">
+                <i class="fa-2x fas fa-ellipsis-v" aria-hidden="true"></i>
+              </a>
+
               <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
               <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
@@ -412,8 +493,12 @@
               <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
               <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
 
-              <a href="#" class='icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
-              <i class="icon_excluir fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
+              <!-- Para álbum -->
+              <a v-if="album.tipo == 'Álbum'" href="#" class='icon_editar' @click="inicia_edicao(3, musica.id)" v-b-modal.modal-musica><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <i v-if="album.tipo == 'Álbum'" class="icon_excluir fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(musica.id)"></i>
+              
+              <!-- Para playlist -->
+              <i v-else class="icon_excluir fas fa-2x fa-trash" aria-hidden="true" v-on:click="remover_da_playlist(album.id, musica.id)"></i>
 
               <span class="tempo_musica_list">{{formata_duracao(musica.duracao)}}</span>
             </a>
@@ -439,22 +524,26 @@
 
             <div class="item_playlist" v-for="(musica, index) in artista_music" :key="musica.id" v-if="artista_music && artista_music.length > 0 && index <= 3">
               <a href="#" class="musicas_populares_artista">
+
+                <a href="#" class="add_faixa_playlist" @click="abre_opcoes_faixa(musica.id)">
+                  <i class="fa-2x fas fa-ellipsis-v" aria-hidden="true"></i>
+                </a>
+
                 <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
                 <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
 
                 <span class="nome_musica_list">{{musica.nome.length > 30 ? musica.nome.slice(0, 30) +"..." : musica.nome}}</span>
 
-                <span class="tempo_musica_list_react">{{formata_duracao(musica.duracao)}}</span>
-
                 <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
                 <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
+
+                <span class="tempo_musica_list_react">{{formata_duracao(musica.duracao)}}</span>
               </a>
             </div>
           </div>
 
           <div id="discografia_artista_perfil">
-
             <b-button v-b-modal.modal-album @click="limpa_dados_objeto(2)" variant="dark" class="btn_add">Adicionar um álbum</b-button>
 
             <div v-if="artista_album.length > 0">
@@ -488,7 +577,7 @@
           <b-nav-form class="input_pesquisa" v-if="artistas.length > 0">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="barra_pesquisa"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -538,7 +627,7 @@
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="barra_pesquisa"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -575,7 +664,7 @@
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="barra_pesquisa"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -585,6 +674,11 @@
         <div v-for="(musica, index) in musicas" :key="musica.id">
           <a href="#" class="musica_inicio_recomendados">
             <hr>
+            
+            <a href="#" class="add_faixa_playlist" @click="abre_opcoes_faixa(musica.id)">
+              <i class="fa-2x fas fa-ellipsis-v" aria-hidden="true"></i>
+            </a>
+            
             <h4 style="float: left; min-width: 20px">{{index + 1}}</h4>
 
             <a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(musica.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a>
@@ -592,7 +686,6 @@
             <span class="nome_musica_list">{{musica.nome}}</span>
 
             <span class="nome_artista_musica_list">{{busca_nome_artista(musica.idArtista)}}</span>
-            <span class="nome_album_musica_list">{{busca_nome_album(musica.idAlbum)}}</span>
 
             <i v-if="!musicas_curtidas.includes(musica.id)" class="far fa-heart fa-2x curtir_faixa faixa_n_curtida" aria-hidden="true" @click="curtir_musica(musica.id)"></i>
             <i v-else class="fas fa-heart fa-2x curtir_faixa faixa_curtida" aria-hidden="true" v-on:click="removeSelectedCurtida(busca_id_curtida(musica.id))"></i>
@@ -613,28 +706,36 @@
 
         <h1 v-else class="titulo_pag musicas_curtidas">Não há playlists no sistema, registre algumas! <i class="fas fa-solid fa-triangle-exclamation"></i></h1>
 
+        <b-button v-b-modal.modal-playlist @click="limpa_dados_objeto(4)" variant="dark" class="btn_add btn_pos_fixo">Criar uma nova playlist</b-button>
+
         <div class="barra_topo_opcoes" v-if="playlists.lenght > 0">
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="barra_pesquisa"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
           </b-nav-form>
         </div>
 
-        <b-table id="items-table" borderless thead-class="d-none" fixed
-                :per-page="perPage" 
-                :current-page="currentPage" 
-                v-bind:items="filterSearchPlaylist">
-              
-              <template #cell(nome)="cellData">
-                  <h4 class='nome_artista'><a href="#" class="icon_control" id="jplayer_play" @click="altera_faixa_atual(cellData.item.id)"><em class="icn_ctrl fa-2x fas fa-play-circle"></em></a> {{cellData.item.nome}}</h4>
+        <div id="lista_biblioteca_pessoal">
+          <div v-for="playlist in playlists">
 
-                  <i class="icon_excluir fa fa-trash" aria-hidden="true" v-on:click="removeSelectedMusica(cellData.item.id)"></i>
-              </template>
-        </b-table>
+            <div class="item_album_link">
+              <a href="#" @click="
+                  playlistView = false
+                  painel_album = true
+                  define_playlist_alvo(playlist.id)">
+
+                <img class="capa_album_lista" :src="playlist.capa" />
+                <h3 class="nome_item_album_curtido">{{playlist.nome.length > 20 ? playlist.nome.slice(0, 20) +"..." : playlist.nome}}</h3>
+              </a>
+              
+              <i class="icon_excluir btn_excluir_album fas fa-2x fa-trash" aria-hidden="true" v-on:click="removeSelectedPlaylist(playlist.id)"></i>
+            </div>
+          </div>
+        </div>
       </div>
       
       <!-- Tabela de músicas curtidas -->
@@ -644,7 +745,7 @@
           <b-nav-form class="input_pesquisa">
             <b-form-input
               size="sm"
-              v-model="artistaSearch"
+              v-model="barra_pesquisa"
               class="input_pesquisa_tam"
               placeholder="Pesquisar"
             ></b-form-input>
@@ -753,11 +854,13 @@
         prancheta_artista: false,
         prancheta_album: false,
         prancheta_musica: false,
+        prancheta_playlist: false,
 
         btn_edit_artista: false,
         btn_edit_album: false,
         btn_edit_musica: false,
-        
+        btn_edit_playlist: false,
+
         modo_operantes: this.createNewArtista,
         titulo_prancheta: "Novo artista",
 
@@ -777,7 +880,7 @@
         painel_artista: false,
 
         time_set_inico: null,
-        artistaSearch: "",
+        barra_pesquisa: "",
         currentPage: 1,
         totalRows: 0,
         perPage: 50,
@@ -809,6 +912,8 @@
         artista_album: [],
         descricao_artista: null,
 
+        playlist_alvo: [],
+
         novoArtista: {
           foto: null,
           nome: null,
@@ -826,6 +931,11 @@
           idAlbum : null,
           duracao : null,
           idArtista : null
+        },
+        novaPlaylist : {
+          nome: null,
+          capa: null,
+          musicas: null
         },
         musica_atual : {
           id_musica: 2,
@@ -846,6 +956,10 @@
         playlist_tocando: [],
 
         musicas_curtidas: [],
+
+        faixa_alvo: null,
+        opcoes_fx: false,
+        add_a_playlist: false,
 
         opcao_repeteco: true,
         opcao_aleatorio: false,
@@ -888,7 +1002,7 @@
           else
             nome_album = album_pesquisa.nome;
 
-          this.nome_album_tocando = nome_album;
+            return nome_album;
         })
       },
 
@@ -928,16 +1042,114 @@
       
       // Atualiza as músicas para o álbum aberto
       define_album_alvo: function(id_album) {
-
         this.$axios.$get(`album/${id_album}`).then((response) => {
           this.album_alvo = response;
-
+          this.album_alvo[0].tipo = "Álbum";
+          
           this.novaMusica.idAlbum = this.album_alvo[0].idAlbum;
           this.define_artista_alvo(this.album_alvo[0].idArtista);
         })
 
         // Atualizando a lista de músicas do álbum selecionado
         this.atualizar_lista_musicas(id_album);
+      },
+
+      define_playlist_alvo: function(id_playlist) {
+        
+        this.$axios.$get(`playlist/${id_playlist}`).then((response) => {
+          this.playlist_alvo = response[0];
+          this.novaPlaylist = response[0];
+
+          this.album_alvo[0].tipo = "Playlist";
+          this.album_alvo[0].id = response[0].id;
+          this.album_alvo[0].capa = response[0].capa;
+          this.album_alvo[0].nome = response[0].nome;
+
+          // Atualizando a lista de músicas da playlist selecionada
+          this.carregar_musicas_playlist();
+        })
+      },
+
+      carregar_musicas_playlist: function(){
+        
+        if(this.playlist_alvo.musicas == null) return;
+
+        this.album_music = [];
+        let faixas_playlist = (this.playlist_alvo.musicas).split(",");
+
+        for(let i = 0; i < this.musicas.length; i++){
+          for(let x = 0; x < faixas_playlist.length; x++){
+            if(this.musicas[i].id == faixas_playlist[x])
+              this.album_music.push(this.musicas[i]);
+          }
+        }
+      },
+
+      adicionar_a_playlist: function(id_playlist, id_faixa){
+        this.$axios.$get(`playlist/${id_playlist}`).then((response) => {
+          this.novaPlaylist = response[0];
+          let faixas_playlist = [];
+
+          // Verificando se a música já se encontra na playlist
+          if(this.novaPlaylist.musicas != null)
+            faixas_playlist = this.novaPlaylist.musicas.split(",");
+
+          for(let i = 0; i < faixas_playlist.length; i++){
+            faixas_playlist[i] = parseInt(faixas_playlist[i]);
+          }
+
+          if(!faixas_playlist.includes(id_faixa))
+            faixas_playlist.push(id_faixa)
+
+          this.novaPlaylist.musicas = faixas_playlist.join(", ");
+        
+          this.updateSelectedPlaylist();
+          this.redefine_opcoes_fx();
+        })
+      },
+
+      remover_da_playlist: function(id_faixa){
+        
+        // Faixas da playlist 
+        let new_faixas = [];
+        
+        for(let i = 0; i < this.album_music.length; i++){
+          if(id_faixa !== parseInt(this.album_music[i].id))
+            new_faixas.push(this.album_music[i].id)
+        }
+
+        this.novaPlaylist.musicas = new_faixas.join(", ");
+        
+        this.updateSelectedPlaylist();
+      },
+
+      abre_opcoes_faixa: function(id_faixa) {
+
+        if(id_faixa == this.faixa_alvo)
+          this.opcoes_fx = !this.opcoes_fx;
+        else
+          this.opcoes_fx = true;
+
+        this.faixa_alvo = id_faixa;
+
+        const e = window.event;
+        const posY = e.clientY;
+
+        if(!this.opcoes_fx)
+          this.redefine_opcoes_fx();
+        else{
+          document.getElementById("opcoes_fx").style.top = `${posY}px`;
+          document.getElementById("opcoes_fx").style.zIndex = 4;
+        }
+      },
+
+      redefine_opcoes_fx: function(){
+        const alvo = document.getElementById("opcoes_fx");
+
+        alvo.style.zIndex = -1;
+        this.opcoes_fx = false;
+        this.faixa_alvo = null;
+        this.add_a_playlist = false;
       },
 
       define_artista_alvo: function(id_artista) {
@@ -1001,9 +1213,39 @@
         this.altera_faixa_atual(this.playlist_atual[0]);
       },
 
+      define_playlist_atual_personali: function(id_playlist){
+
+        this.$axios.$get(`playlist/${id_playlist}`).then((response) => {
+          let album_alvo = response[0];
+          let musicas_alvos = album_alvo.musicas.split(",");
+
+          // Previne atualizações de playlists vazias
+          if(musicas_alvos.length < 1) return;
+
+          let dados_musica = [];
+          this.playlist_atual = [];
+          this.playlist_tocando = [];
+
+          for(let x = 0; x < this.musicas.length; x++){
+            for(let i = 0; i < musicas_alvos.length; i++){
+              this.playlist_atual.push(parseInt(musicas_alvos[i]));
+
+              // Salvando o objeto de música num array
+              if(parseInt(musicas_alvos[i]) == this.musicas[i].id)
+                dados_musica.push(this.musicas[i]);
+            }
+          }
+
+          this.playlistLateral = true;
+          this.nome_album_tocando = album_alvo.nome;
+          this.playlist_tocando = dados_musica;
+          this.altera_faixa_atual(this.playlist_atual[0]);
+        });
+      },
+
       inicia_edicao: function(tipo_alvo, id_alvo){
 
-        // 1 -> Artista, 2 -> "Album", 3 -> Música
+        // 1 -> Artista, 2 -> "Album", 3 -> Música, 4 -> Playlist
         if(tipo_alvo == 1){
           this.$axios.$get(`artista/${id_alvo}`).then((response) => {
             this.novoArtista = response[0];
@@ -1020,7 +1262,7 @@
             this.modo_operantes = this.updateSelectedAlbum;
             this.btn_edit_album = true;
           })
-        }else{
+        }else if(tipo_alvo == 3){ // Música
           this.$axios.$get(`musica/${id_alvo}`).then((response) => {
             this.novaMusica = response[0];
             
@@ -1028,12 +1270,20 @@
             this.modo_operantes = this.updateSelectedMusic;
             this.btn_edit_musica = true;
           })
+        }else{
+          this.$axios.$get(`playlist/${id_alvo}`).then((response) => {
+            this.novaPlaylist = response[0];
+            
+            this.titulo_prancheta = "Atualizar Playlist";
+            this.modo_operantes = this.updateSelectedPlaylist;
+            this.btn_edit_playlist = true;
+          })
         }
       },
 
       limpa_dados_objeto: function(caso){
         
-        // 1 -> Artista, 2 -> Álbum, 3 -> Música
+        // 1 -> Artista, 2 -> Álbum, 3 -> Música, 4 -> Playlist
         if(caso == 1){ // Artista
           this.novoArtista = {
             foto: null,
@@ -1055,7 +1305,7 @@
           this.btn_edit_album = false;
           this.titulo_prancheta = "Novo Álbum";
           this.modo_operantes = this.createNewAlbum;
-        }else{
+        }else if(caso == 3){ // Músicas
           this.novaMusica = {
             nome: null,
             estilo: null,
@@ -1067,6 +1317,16 @@
           this.btn_edit_musica = false;
           this.titulo_prancheta = "Nova Música";
           this.modo_operantes = this.createNewMusica;
+        }else{
+          this.novaPlaylist = {
+            nome: null,
+            capa: null,
+            musicas: null
+          }
+
+          this.btn_edit_playlist = false;
+          this.titulo_prancheta = "Nova Playlist";
+          this.modo_operantes = this.createNewPlaylist;
         }
       },
 
@@ -1223,7 +1483,8 @@
         else
           this.musica_atual.source = "songs/1.mp3";
 
-        this.tocar_musica();
+        if(this.musica_atual.nome)
+          this.tocar_musica();
       },
 
       altera_volume_musica: function(){
@@ -1305,7 +1566,6 @@
       },
       
       curtir_musica: function(id_musica){
-
         this.novaCurtida.idMusica = id_musica;
         this.createNewCurtida();
       },
@@ -1331,7 +1591,7 @@
       updateArtista: function () {
         this.$axios.$get("artista").then((response) => {
           this.artistas = response;
-          this.totalRows = this.artistas.length
+          this.totalRows = this.artistas.length;
         })
       },
 
@@ -1353,8 +1613,7 @@
       },
 
       removeSelectedArtista: function (id) {
-        this.$axios.$delete(`artista/${id}`).then((response) => {
-          
+        this.$axios.$delete(`artista/${id}`).then(() => {
           this.updateArtista();
         })
       },
@@ -1406,8 +1665,7 @@
       },
 
       removeSelectedAlbum: function (id) {
-        this.$axios.$delete(`album/${id}`).then((response) => {
-          
+        this.$axios.$delete(`album/${id}`).then(() => {
           this.updateAlbum();
         })      
       },
@@ -1440,7 +1698,6 @@
       updateMusica: function () {
         this.$axios.$get("musica").then((response) => {
           this.musicas = response;
-          this.totalRows = this.musicas.length;
         })
       },
 
@@ -1463,14 +1720,58 @@
       },
 
       removeSelectedMusica: function (id) {
-        this.$axios.$delete(`musica/${id}`).then((response) => {
-          
+        this.$axios.$delete(`musica/${id}`).then(() => {
           this.updateMusica();
         })
       },
 
-      createNewCurtida: function () {
+      createNewPlaylist: function (event) {
+        event.preventDefault();
 
+        // Veja mais sobre em https://axios.nuxtjs.org/usage
+        this.$axios
+          .$post("playlist", this.novaPlaylist)
+          .then(() => {
+            this.updatePlaylist();
+          })
+          .catch((error) => {
+            console.error('Não foi possível criar uma nova playlist');
+            console.log(error);
+          });
+
+          this.$bvModal.hide('modal-playlist');
+          this.prancheta_artista = false;
+      },
+
+      updatePlaylist: function () {
+        this.$axios.$get("playlist").then((response) => {
+          this.playlists = response;
+        })
+      },
+
+      updateSelectedPlaylist: function () {
+
+        this.$axios
+          .$post("playlist/update", this.novaPlaylist)
+          .then(() => {
+            this.updatePlaylist();
+          })
+          .catch((error) => {
+            console.error('Não foi possível atualizar a playlist selecionada');
+            console.log(error);
+          });
+
+          this.$bvModal.hide('modal-playlist');
+          this.modo_operantes = this.createNewPlaylist;
+      },
+
+      removeSelectedPlaylist: function (id) {
+        this.$axios.$delete(`playlist/${id}`).then(() => {
+          this.updatePlaylist();
+        })
+      },
+
+      createNewCurtida: function () {
         this.$axios
           .$post("curtida", this.novaCurtida)
           .then(() => {
@@ -1493,12 +1794,12 @@
 
           this.totalRows = this.curtidas.length;
         })
+
+        this.redefine_opcoes_fx();
       },
 
       removeSelectedCurtida: function (id) {
         this.$axios.$delete(`curtida/${id}`).then((response) => {
-          
-          console.log(response);
           this.updateCurtida();
         })
       },
@@ -1506,33 +1807,33 @@
 
     computed: {
       filterSearchArtista: function () {
-        if (this.artistaSearch.length > 0) {
+        if (this.barra_pesquisa.length > 0) {
           return this.artistas.filter((artista) => 
-            artista.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+            artista.nome.toLowerCase().includes(this.barra_pesquisa.toLowerCase())
           )
         } else
           return this.artistas;
       },
       filterSearchAlbum: function () {
-        if (this.artistaSearch.length > 0) {
+        if (this.barra_pesquisa.length > 0) {
           return this.albuns.filter((album) => 
-            album.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+            album.nome.toLowerCase().includes(this.barra_pesquisa.toLowerCase())
           )
         } else
           return this.albuns;
       },
       filterSearchMusica: function () {
-        if (this.artistaSearch.length > 0) {
+        if (this.barra_pesquisa.length > 0) {
           return this.musicas.filter((musica) => 
-            musica.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+            musica.nome.toLowerCase().includes(this.barra_pesquisa.toLowerCase())
           )
         } else
           return this.musicas;
       },
       filterSearchPlaylist: function() {
-        if (this.artistaSearch.length > 0) {
+        if (this.barra_pesquisa.length > 0) {
           return this.playlists.filter((playlist) => 
-            playlist.nome.toLowerCase().includes(this.artistaSearch.toLowerCase())
+            playlist.nome.toLowerCase().includes(this.barra_pesquisa.toLowerCase())
           )
         } else
           return this.playlist;

@@ -9,7 +9,6 @@ routes.post("/playlist/update", PlaylistController.update);
 
 routes.get("/playlist", verifyJWT, PlaylistController.listAll);
 routes.get("/playlist/:id", verifyJWT, PlaylistController.getById);
-routes.get("/playlist/:nome", verifyJWT, PlaylistController.getByName);
 
 routes.delete("/playlist/:id", verifyJWT, PlaylistController.remove);
 

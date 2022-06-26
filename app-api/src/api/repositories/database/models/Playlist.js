@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     musicas: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
   }, {
     sequelize,

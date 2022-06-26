@@ -62,24 +62,7 @@ module.exports = {
                 }                
             });
     },
-
-    // handler para recuperar um artista por nome
-    getByName: function (req, res) {
-        const playlistId = req.params.nome;
-        PlaylistService.getByName(
-            playlistId).then((playlist) => {
-                if(playlist){
-                    res.statusCode = 200; // Status HTTP para OK;
-                    res.set("Content-Type", "application/json");
-                    res.send(JSON.stringify(artista));                    
-                } else{
-                    res.statusCode = 404; // Status HTTP para No Found;
-                    res.set("Content-Type", "application/json");
-                    res.send({status: `Não foi possível encontrar a playlist ${playlistId}.`});
-                }                
-            });
-    },
-
+    
     remove: function (req, res) {
         PlaylistService.removeById(
             // req.params acessa os parâmetros passados na path definidos como :nomeparam no router

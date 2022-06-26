@@ -388,6 +388,7 @@ a:hover{
     float: left;
     margin-top: 6px;
     margin-left: 5px;
+    margin-right: 20px;
 }
 #painel_album{
     width: 100%;
@@ -462,11 +463,11 @@ a:hover{
 }
 #opcoes_fx{
     left: 35%;
-    z-index: 4;
+    z-index: -1;
     padding: 10px;
-    display: none;
     font-size: 20px;
     position: fixed;
+    top: -20%;
     max-width: 200px;
     border-radius: 5px;
     margin-left: -100px;
@@ -619,10 +620,15 @@ hr{
     padding: 8px;
     margin-left: 25px;
     border-radius: 5px;
-    background-color: rgb(88, 88, 88);
+    background-color: rgba(6, 2, 19, 0.856);
 }
-.btn_add:hover{
-    background-color: rgb(53, 53, 53);
+.btn_pos_fixo{
+    position: absolute;
+    top: 5%;
+    left: 21%;
+}
+.btn_add:hover, .btn_pos_fixo:hover{
+    background-color: rgb(8, 58, 66);
 }
 .btn_remover{
     border: solid 0px white;

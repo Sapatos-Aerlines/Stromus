@@ -1028,6 +1028,8 @@
       },
 
       formata_duracao: function(tempo_duracao){
+        if(tempo_duracao == null) return;
+
         return tempo_duracao.slice(0, 5);
       },
 
